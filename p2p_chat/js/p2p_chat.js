@@ -19,10 +19,17 @@ function stream_init() {
     .catch(function (err) {
         console.log("media error", err);
     });
+    pid = getCookie('my_peer_ID');
+    if (pid) {
+        gEl('src_id').value = getCookie('my_peer_ID');
+        peer_init();
+    }
+    gEl('dst_id').value = getCookie('rmt_peer_ID');
 }
 
 function peer_init() {
     var pid = gEl('src_id').value;
+    setCookie('my_peer_ID', pid, 512);
     if (pid.length < 1) 
         pid = null;
     console.log('peer.init', pid);
@@ -87,6 +94,7 @@ function peer_connect() {
         return;
     }
     var pid = gEl('dst_id').value;
+    setCookie('rmt_peer_ID', pid, 512);
     msg_add('- calling: ' + pid);
     console.log('peer_connect peer_id', pid);
     if (pcon)
@@ -103,8 +111,9 @@ function peer_send() {
     pcon.send(msg);
 }
 
-function media_connect() {
+function video_connect() {
     var pid = gEl('dst_id').value;
+    setCookie('rmt_peer_ID', pid, 512);
     console.log('media_connecting', pid);
     msg_add('- video calling: ' + pid);
     console.log('video_calling', pid, my_stream);
