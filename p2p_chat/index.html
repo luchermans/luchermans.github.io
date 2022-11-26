@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/p2p_chat.css">
+  <title>Peer Chat</title>
+  <script src="js/peerjs.min.js"></script>
+  <script src="js/p2p_chat.js"></script>
+</head>
+<body>
+<!-- Top Navigation Menu -->
+<div class="topnav">
+  <a href="#home" class="active" id="title" onclick="nav_group()">p2p Chat</a>
+  <div id="groups">
+  </div>
+  <a href="javascript:void(0);" class="icon" onclick="nav_toggle()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+<video id='local_stream' autoplay muted playsinline></video>
+<div style="padding-left:16px" id="takos">
+Source: enter a unique ID (adress, email, phone) and press Listen<br>
+Destination: enter the ID to call and press Call or Video call<br>
+<table>
+    <tr><td>Source ID: </td><td><input id='src_id'></input></td><td>
+        <button onclick='peer_init()'>Listen</button></td></tr>
+    <tr><td>Destination ID: </td><td><input id='dst_id'></input></td><td>
+        <button onclick='peer_connect()'>Call</button>
+        <button onclick='media_connect()'>Video call</button>
+        </td></tr>
+    <tr><td>message:</td><td><input id='peer_msg' placeholder='type your message here'></input></td><td>
+        <button onclick='peer_send()'>send</button></td></tr>
+    <tr><td>peer status:</td><td><div id='peer_status'></div></td><td>
+    <tr><td><h3>Messages</h3></td><td></td><td>
+        <button onclick='msg_clr()'>clear</button></td></tr>
+</table>
+<!-- <audio id='audio_id' controls></audio> -->
+
+<video id='rmt_stream' autoplay muted playsinline></video>
+<div id='msg_box'></div>
+</div>
+
+<script>
+stream_init();
+</script>
+</body>
+</html>
