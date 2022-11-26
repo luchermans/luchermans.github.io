@@ -59,7 +59,7 @@ function peer_init() {
         call.answer(my_stream); // Answer the call with an A/V stream.
         call.on('stream', function(rmt_stream) {
             console.log('show rmt stream', rmt_stream);
-            gEl('video_id').srcObject = rmt_stream;
+            gEl('rmt_stream').srcObject = rmt_stream;
         });
     });
 }
