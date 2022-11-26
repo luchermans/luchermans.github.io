@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="css/p2p_chat.css">
   <title>Peer Chat</title>
   <script src="js/peerjs.min.js"></script>
+  <script src="js/cookies.js"></script>
   <script src="js/p2p_chat.js"></script>
 </head>
 <body>
@@ -27,7 +28,7 @@ Destination: enter the ID to call and press Call or Video call<br>
         <button onclick='peer_init()'>Listen</button></td></tr>
     <tr><td>Destination ID: </td><td><input id='dst_id'></input></td><td>
         <button onclick='peer_connect()'>Call</button>
-        <button onclick='media_connect()'>Video call</button>
+        <button onclick='video_connect()'>Video call</button>
         </td></tr>
     <tr><td>message:</td><td><input id='peer_msg' placeholder='type your message here'></input></td><td>
         <button onclick='peer_send()'>send</button></td></tr>
@@ -37,7 +38,7 @@ Destination: enter the ID to call and press Call or Video call<br>
 </table>
 <!-- <audio id='audio_id' controls></audio> -->
 
-<video id='rmt_stream' autoplay muted playsinline></video>
+<video id='rmt_stream' autoplay playsinline></video>
 <div id='msg_box'></div>
 </div>
 
