@@ -17,7 +17,7 @@ function stream_init() {
         gEl('local_stream').srcObject = my_stream;
     })
     .catch(function (err) {
-        console.log("media error", err);
+        console.log('media error', err);
     });
     pid = getCookie('my_peer_ID');
     if (pid) {
@@ -27,26 +27,32 @@ function stream_init() {
     gEl('dst_id').value = getCookie('rmt_peer_ID');
 }
 
-function peer_init() {
+function peer_init(call_back) {
+    var cll_back = call_back;
     var pid = gEl('src_id').value;
     setCookie('my_peer_ID', pid, 512);
     if (pid.length < 1) 
         pid = null;
     console.log('peer.init', pid);
+    console.log('call_back', cll_back);
+    
     peer = new Peer(pid);
     peer.on('open', function(id){
         console.log('peer.on open', id);
         msg_add('- listening on ' + id);
+        gEl('peer_status').innerHTML = 'Listening';
         gEl('src_id').value = id;
+        console.log('cll_back', cll_back);
+        if (cll_back)  cll_back();
     });
     peer.on('disconnected', function () {
         console.log('Disconnected');
-        gEl('peer_status').innerHTML = "Disconnected from peer server";
+        gEl('peer_status').innerHTML = 'Disconnected from peer server';
         peer = null;
     });
     peer.on('close', function() {
         console.log('Closed');
-        gEl('peer_status').innerHTML = "Connection destroyed. Please refresh";
+        gEl('peer_status').innerHTML = 'Connection destroyed. Please refresh';
         pcon = peer = null;
     });
     peer.on('error', function (err) {
@@ -60,9 +66,9 @@ function peer_init() {
         pcon_join(pcon);
     });
     peer.on('call', function(call) {
-        msg_add('- incomming video call: ' + call.peer);
         console.log('incomming video_call', call);
         console.log('answer video_call' , my_stream);
+        msg_add('- incomming video call: ' + call.peer);
         call.answer(my_stream); // Answer the call with an A/V stream.
         call.on('stream', function(rmt_stream) {
             console.log('show rmt stream', rmt_stream);
@@ -71,12 +77,13 @@ function peer_init() {
     });
 }
 
-function pcon_join(pcon) {
+function pcon_join(pcon, call_back) {
     pcon.on('open', function(){
         msg_add('- call open: ' + pcon.peer);
         console.log('pcon.on: open', pcon.peer);
         gEl('peer_status').innerHTML = 'Connected to: ' + pcon.peer;
         peer.disconnect();  //once we have a connection to peer server not needed
+        if (call_back)  call_back();
     });
     pcon.on('data', function(data){
         msg_add('<------ ' + data);
@@ -88,10 +95,10 @@ function pcon_join(pcon) {
     });
 }
 
-function peer_connect() {
+function peer_connect(call_back) {
     if (!peer) {
-        peer_init();
-        return;
+        peer_init(call_back);
+        return null;
     }
     var pid = gEl('dst_id').value;
     setCookie('rmt_peer_ID', pid, 512);
@@ -100,11 +107,12 @@ function peer_connect() {
     if (pcon)
         pcon.close();
     pcon = peer.connect(pid, {debug:2, reliable:true});
-    pcon_join(pcon)
+    pcon_join(pcon, call_back);
+    return pcon;
 }
 
 function peer_send() {
-    if (!pcon)  peer_connect();
+    if (!pcon) { pcon = peer_connect(peer_send); return; }
     var msg = gEl('peer_msg').value;
     gEl('peer_msg').value = '';
     msg_add('--> ' + msg);
@@ -112,6 +120,7 @@ function peer_send() {
 }
 
 function video_connect() {
+    if (!peer)  peer_init();
     var pid = gEl('dst_id').value;
     setCookie('rmt_peer_ID', pid, 512);
     console.log('media_connecting', pid);
@@ -125,11 +134,10 @@ function video_connect() {
     });
 }
 
-
 function msg_add(msg) {
     console.log(msg);
     d = new Date();
-    gEl('msg_box').innerHTML = d.toLocaleTimeString() + ": " + msg + '<br>' + gEl('msg_box').innerHTML;
+    gEl('msg_box').innerHTML = d.toLocaleTimeString() + ': ' + msg + '<br>' + gEl('msg_box').innerHTML;
 }
 function msg_clr() {
     gEl('msg_box').innerHTML = '';
