@@ -52,7 +52,7 @@ function peer_init(call_back) {
     });
     peer.on('close', function() {
         console.log('Closed');
-        gEl('peer_status').innerHTML = 'Connection destroyed. Please refresh';
+        gEl('peer_status').innerHTML = 'Connection destroyed. Please ReInit';
         pcon = peer = null;
     });
     peer.on('error', function (err) {
