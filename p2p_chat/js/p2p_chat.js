@@ -27,6 +27,15 @@ function stream_init() {
     gEl('dst_id').value = getCookie('rmt_peer_ID');
 }
 
+function peer_reload() {
+    var pid = gEl('src_id').value;
+    if (pid)    setCookie('my_peer_ID', pid, 512);
+    console.log('reload', pid);
+    pid = gEl('dst_id').value;
+    if (pid)    setCookie('rmt_peer_ID', pid, 512);
+    location.reload();
+}
+
 function peer_init(call_back) {
     var cll_back = call_back;
     var pid = gEl('src_id').value;
