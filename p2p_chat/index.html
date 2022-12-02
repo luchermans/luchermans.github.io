@@ -25,9 +25,9 @@
 <video id='local_stream' autoplay muted playsinline'></video>
 <table>
     <tr><td><button class='fa fa-user' onclick='peer_reload()'> ReInit</button></td>
-        <td><input id='src_id'></input></td><td></td><tr>
+        <td><input id='src_id'  placeholder='your ID'></input></td><td></td><tr>
     <tr><td><button class='fa fa-video-camera' onclick='video_connect()'> Call</button></td>
-        <td><input id='dst_id'></input></td>
+        <td><input id='dst_id' placeholder='destination ID'></input></td>
         <td><button class='fa fa-clipboard' onclick='invite()'> Invite</button></td><tr>
     <tr><td><button class='fa fa-envelope-o' onclick='peer_send()'> Send</button></td>
         <td colspan=2><textarea id='peer_msg' placeholder='type your message here'></textarea ></td><tr>
