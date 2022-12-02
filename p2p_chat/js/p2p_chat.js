@@ -15,16 +15,21 @@ function stream_init() {
         my_stream = stream;
         console.log('my_stream' , stream);
         gEl('local_stream').srcObject = my_stream;
+        if (!do_invite())   peer_users();
     })
     .catch(function (err) {
         console.log('media error', err);
+        alert(err);
     });
+}
+
+function peer_users() {
     pid = getCookie('my_peer_ID');
     if (pid) {
         gEl('src_id').value = getCookie('my_peer_ID');
-        peer_init();
     }
     gEl('dst_id').value = getCookie('rmt_peer_ID');
+    peer_init();
 }
 
 function peer_reload() {
@@ -37,22 +42,21 @@ function peer_reload() {
 }
 
 function peer_init(call_back) {
-    var cll_back = call_back;
     var pid = gEl('src_id').value;
     setCookie('my_peer_ID', pid, 512);
     if (pid.length < 1) 
         pid = null;
     console.log('peer.init', pid);
-    console.log('call_back', cll_back);
-    
+
     peer = new Peer(pid);
+    peer.call_back = call_back;
     peer.on('open', function(id){
         console.log('peer.on open', id);
         msg_add('- listening on ' + id);
         gEl('peer_status').innerHTML = 'Listening';
         gEl('src_id').value = id;
-        console.log('cll_back', cll_back);
-        if (cll_back)  cll_back();
+        console.log('call_back', peer.call_back);
+        if (peer.call_back)  peer.call_back();
     });
     peer.on('disconnected', function () {
         console.log('Disconnected');
@@ -91,7 +95,7 @@ function pcon_join(pcon, call_back) {
         msg_add('- call open: ' + pcon.peer);
         console.log('pcon.on: open', pcon.peer);
         gEl('peer_status').innerHTML = 'Connected to: ' + pcon.peer;
-        peer.disconnect();  //once we have a connection to peer server not needed
+        if (peer) peer.disconnect();  //once we have a connection no need for peer server
         if (call_back)  call_back();
     });
     pcon.on('data', function(data){
@@ -140,14 +144,38 @@ function video_connect() {
     call.on('stream', function(rmt_stream) {
         console.log('rmt_stream', rmt_stream);
         gEl('rmt_stream').srcObject = rmt_stream;
+        if (peer)   peer.disconnect();  //once we have a connection no need for peer server
     });
 }
 
 function msg_add(msg) {
-    console.log(msg);
-    d = new Date();
+    var d = new Date();
     gEl('msg_box').innerHTML = d.toLocaleTimeString() + ': ' + msg + '<br>' + gEl('msg_box').innerHTML;
 }
 function msg_clr() {
     gEl('msg_box').innerHTML = '';
+}
+
+function invite() { //make invite url, swap from to
+    var inv = (location + '#').split('?')[0].split('#')[0];
+    inv = inv + '?from=' + gEl('dst_id').value +'&to=' + gEl('src_id').value;
+    console.log(inv);
+    navigator.clipboard.writeText(inv).then(function() {
+        alert('URL copied to clipboard\n'+ inv);
+    });
+}
+function do_invite() {  //get ?from to pars
+    var pars = ('' + location).split('?from=')[1];
+    if (!pars)  return 0;
+    pars = pars.split('&to=');
+    if (pars[0]) {
+        gEl('src_id').value = pars[0];
+        setCookie('my_peer_ID', pars[0], 512);
+        if (pars[1]) {
+            gEl('dst_id').value = pars[1];
+            peer_init();
+            return 1;
+        }
+    }
+    return 0;
 }
