@@ -1,0 +1,78 @@
+<html>
+<head><title>BustOut</title>
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000-------
+-- Paste the code below into an other htm to start BustOut --
+<html>
+<body><center><form name="open-bust-out">
+<input type=button value="Play BustOut" 
+onClick="window.open('bustout.htm','BustOut','status=no,top=10,left=100,width=400,height=500');">
+</form></center></body>
+</html>
+-------->
+<style type="text/css"> .blk  {	position : absolute; visibility: hidden;} </style>
+<script>
+function gMousePos(e)	//---get mouse posistion
+{	if (NS) racX=e.pageX;
+	else	racX=event.clientX+document.body.scrollLeft;
+	rac.left=racX-20;
+}
+function gReload()		//--start New Game
+{ var SHOW=(NS?"show":"visible");
+	X=Y=510; racX=rac.top=450; dX=dY=nrHits=nrBal=0;
+	for (i=0; i<40; ++i) { blc[i].hit=5; blc[i].img.src="ball5.gif"; blc[i].visibility=SHOW; }
+	bal.visibility=SHOW; rac.visibility=SHOW;
+	setTimeout(gBall, 2000);
+}
+function gBall()		//---Move the Ball
+{	r=0;	//--0:don't change dX nor dY  1:dX=-dX  2:dY=-dY  3:both dX and dY
+	if (Y>500)	{ X=370; Y=150;	dX=dY=8; ++nrBal; }	//--the bal is out
+	if (X<0 && dX<0 || X>400 && dX>0) r=1;	if (Y<0) r=2; //--bounce at corners
+	if (dY>0 && Y>440 && Y<470)	//--check if Racket Hit
+	{	i=Math.abs(racX-X)
+	 	if (i<25)	//--bounce at racket Hit
+		{	r=2;	//--if outerside racket inc/dec angle
+			if (i>8)	if (dX*(X-racX)>0) { if (Math.abs(dX)<=Math.abs(dY)) dX*=2; }
+						else if (Math.abs(dX)>=Math.abs(dY)) dX=Math.floor(dX/2);
+		}
+	}	//--which Block is Hit
+	i=Math.floor((X-40)/40); j=Math.floor((Y-50)/30);
+	if (i>=0 && i<8 && j>=0 && j<5)	//--if Block Hit
+	{	r=Math.abs(X-dX-60-40*i)-(Math.abs(Y-dY-65-30*j)+1); //FuzzyLogic
+		i=j*8+i; 			//--if Block not Hit yet
+		if (blc[i].hit>0)	//--bounce at X or Y axis or both
+		{	if (Math.abs(r)>5) if (r>0) r=1; else r=2; else r=3;
+			--blc[i].hit;  blc[i].img.src='ball'+blc[i].hit+'.gif';
+		 	dY=((dY>0)?1:-1)*(Math.floor(++nrHits/16)+12); //speed = nrHits
+		} else r=0;
+	}
+	if (r==1 || r==3) dX=-dX; if (r>1) dY=-dY;
+	X+=dX; Y+=dY; bal.left=X-8; bal.top=Y-8;
+	if (nrBal>5 || nrHits>=200)	setTimeout(gReload, 5000);
+	else			setTimeout(gBall, 50);
+}
+//-------Main---------
+var i,j,r, NS, X,dX,Y,dY,racX, nrBal,nrHits, bal,rac, blc=new Array(32);
+var col=new Array('#FFFF00','#FFCF00','#FF7F00', '#FF3f00', '#F00000');
+NS=(document.layers?1:0);
+for(i=0; i<40; ++i)
+{	r=Math.floor(i/8);
+	document.write("<div class='blk' id='b"+i+"'><img name='im"+i+"' src='ball.gif' width=40 height=30></div>");
+	if (NS)	{ blc[i]=document.layers["b"+i]; blc[i].img=blc[i].document.images["im"+i]; }
+	else	{ blc[i]=document.all["b"+i].style; blc[i].img=document.images["im"+i]; }
+	blc[i].left=(i%8)*40+40; blc[i].top=r*30+50;
+}
+document.write("<div class='blk' id='ball'><img src='ball4.gif' width=14 height=14></div>");
+document.write("<div class='blk' id='racket'><img src='ball4.gif' width=40 height=12></div>");
+if (NS) { bal=document.layers["ball"]; rac=document.layers["racket"]; document.captureEvents(Event.MOUSEMOVE); } 
+else	{ bal=document.all["ball"].style; rac=document.all["racket"].style; }
+document.onmousemove=gMousePos;
+gReload();
+//-->
+</script>
+</head>
+<body background="bustout.jpg">
+</body>
+</html>

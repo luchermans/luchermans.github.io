@@ -1,0 +1,78 @@
+<HTML><HEAD>
+</HEAD>
+<BODY bgcolor="#f8f0f0" text="#004040">
+<table border='0' cellpadding='0' cellspacing='0'><tr><td bgcolor="#f0e8e8" width="100" valign="top">
+<A HREF="smultita.htm" TARGET="_top" onMouseOver='document.smulti.src="smultia.gif"'  onMouseOut='document.smulti.src="smulti.gif"'>
+	<IMG name="smulti" SRC="smulti.gif" border=0 alt="sMulTi"></a>
+<br>
+&nbsp <a href="../default.htm" onMouseOver='document.r0.src="lbar.gif"' onMouseOut='document.r0.src="rbar.gif"'>
+		<img name="r0" SRC="rbar.gif" width=10 height=10 border=0>EmbLin </a><br>
+&nbsp <a href="../xvtouch.htm" onMouseOver='document.r4.src="./img/lbar.gif"' onMouseOut='document.r4.src="./img/rbar.gif"'>
+		<img name="r4" SRC="img/rbar.gif" width=10 height=10 border=0>xvTouch</a><br>		
+&nbsp <a href="../smultita.htm" onMouseOver='document.r1.src="lbar.gif"' onMouseOut='document.r1.src="rbar.gif"'>
+		<img name="r1" SRC="rbar.gif" width=10 height=10 border=0>sMultiTA </a><br>
+&nbsp <a href="../dlr.htm" onMouseOver='document.r2.src="lbar.gif"' onMouseOut='document.r2.src="rbar.gif"'>
+		<img name="r2" SRC="rbar.gif" width=10 height=10 border=0>Rabbit Dlr </a><br>
+&nbsp 	<img name="r3" SRC="rbar.gif" width=10 height=10 border=0><b>Java Fun </b><br>
+</td><td>
+
+<BR><BR><BR><dt><dd>
+<h1>Catch me !</h1>
+or play <font size=+3><a href="../smultita.htm" onClick="window.open('breakout.htm','BreakOut','status=no,top=10,left=100,width=400,height=500');">
+BreakOut</a></font>
+<br>&nbsp &nbsp &nbsp or <font size=+3><a href="../memory.htm"> Memory</a></font>
+<P>If you like this java scripts ...<BR>
+you can download them here <a href="../pub/ani.zip"> Ani.zip</a> or 
+<a href="../pub/breakout.zip"> BreakOut.zip</a>
+</dd></dt>
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<div id="Animal" style="position: absolute;"><img name="AniIMG" src="ani0.gif" width=25 height=25></div>
+<script><!--
+var NS,mX,mY,aX,aY,angle,speed,W,H,ani,aniMG,ash=0, spl=new Array(), aniPL=new Array();
+var aniSTOP=0;
+for (var i=0; i<8; ++i)
+{	document.writeln('<div id="ani'+i+'" style="position: absolute; visibility: hidden;"><img src="splash.gif"></div>');
+	aniPL[i]=new Image; aniPL[i].src="ani"+i+".gif";
+}
+NS=(document.layers?1:0); 
+if (NS) {	ani=document.layers["Animal"];	aniMG=ani.document.images["AniIMG"];
+			W=window.innerWidth; H=window.innerHeight;
+			document.captureEvents(Event.MOUSEMOVE); }
+else    {	ani=document.all["Animal"].style; aniMG=document.images["AniIMG"];
+		 	W=document.body.offsetWidth; H=document.body.offsetHeight; }
+document.onmousemove=gMousePos;
+H+=50; W+=50; aX=300; aY=100; angle=speed=10;
+for (var i=0; i<8; ++i)
+	if (NS)	spl[i]=document.layers["ani"+i];
+	else	spl[i]=document.all["ani"+i].style; 
+ani_go();
+	
+function ani_go()
+{ var d;
+	if (aniSTOP)	return;
+	if (aX<-100) angle=0; else if (aY<-100) angle=32;			//always go back onscreen
+	else if (aX>W) angle=64; else if (aY>H) angle=96;
+	d=Math.abs(aX+10-mX)+Math.abs(aY+10-mY);	//get mouse distance .. check catch 
+	if (d<12) { ash=++ash%8; speed=-2000; spl[ash].left=aX; spl[ash].top=aY;	//if mouse close
+				spl[ash].visibility=(NS?"show":"visible"); aX=angle=0; }	   	//inc speed
+	else if (d<64) speed=128; else if (d<128) speed=112; else if (d<256) speed=96; //else rnd speed
+	else { speed=Math.abs(speed-8+Math.ceil(16*Math.random()))%128; while (speed>80) speed-=32; }
+	angle=Math.abs(angle-8+Math.ceil(16*Math.random()))%128;	//random angle
+	d=Math.ceil(angle/16)%8; 	aniMG.src=aniPL[d].src;	//set img src on angle
+	if ((d%4)!=0)	aY+=Math.ceil(2+speed/8)*( d<4?1:-1 );		//move img angle and speed
+	if ((d%4)!=2)	aX+=Math.ceil(2+speed/8)*( (++d%8)<4?1:-1 );
+	ani.left=aX;	ani.top=aY;	setTimeout('ani_go()',144-speed);
+}
+function gMousePos(e)
+{	if (NS) { mX=e.pageX;	mY=e.pageY; }
+	else	{ mX=event.clientX + document.body.scrollLeft;
+			  mY=event.clientY + document.body.scrollTop; }
+} //--></script>
+
+</td></tr></table>
+</BODY></HTML>

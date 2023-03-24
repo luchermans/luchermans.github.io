@@ -1,0 +1,270 @@
+<HTML>
+<HEAD>
+<TITLE>Linux EMBEDDING mini HOWTO</TITLE>
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+</HEAD>
+<BODY bgcolor="#f8f0f0">
+<IMG SRC="prev.gif" ALT="Previous">
+<A HREF="#toc1"><IMG SRC="next.gif" ALT="Next"></A>
+<A HREF="#toc1"><IMG SRC="toc.gif" ALT="Contents"></A>
+<HR>
+<H1><A NAME="top">Linux EMBEDDING mini HOWTO</a></H1>
+
+<H3>Luc Hermans, <CODE><a href="mailto:smultita at gmail.com"> smultita at gmail.com</a></CODE></H3>v0.2, 15 March 2000
+<P><HR><EM>This document shows how to strip down your Linux OS, and provides one method
+of putting it in an embedded i386 PC and hopefully get it running.
+</EM><HR></P>
+<P>
+<H2><A NAME="toc1"></A><U>Content</U></H2>
+<UL>
+<LI><A HREF="#ss1">1. Introduction</A>
+<LI><A HREF="#ss2">2. Getting Linux</A>
+<LI><A HREF="#ss3">3. Linux boot process</A>
+<LI><A HREF="#ss4">4. Compile the Linux kernel</A>
+<LI><A HREF="#ss5">5. Build an initial ramdisk image</A>
+<LI><A HREF="#ss6">6. Build and install additional packages</A>
+<LI><A HREF="#ss7">7. Putting everything together</A>
+<LI><A HREF="#ss8">8. Download</A>
+<LI><A HREF="#ss9">9. Useful links</A>
+</UL>
+
+<H2><A NAME="ss1">1. Introduction</A></H2>
+
+<P>This document is written in the hope that it will be useful to those who
+want to embed Linux.  Specially the one that are new to Linux (like me, I was a DOS/Win user).
+It will spare you the wrestling true all the documentation, HOWTO's and  MAN pages
+I have gone true.
+</P>
+
+<H2><A NAME="ss2">2. Getting Linux</A></H2>
+
+<P>You can download Linux from the internet or you can take a full Linux distribution.
+The last one contains everything you need (utilities, sources, compiler, debugger, documentation ...)
+and is easy to install. (next to my other OS)</P>
+
+<H2><A NAME="ss3">3. Linux boot process</A></H2>
+
+<P>We should know some basics before we go any further
+
+<P>After the PC starts, the boot manager (found at the MBR of the <b>boot device</b>) launches the
+<b>linux kernel</b>. With a boot manager like <b>lilo, syslinux, loadlin</b>... you can pass 
+parameters to the kernel. These parameters are neccessary to boot the kernel from another 
+root device like a ramdisk. (or you can patch these settings into the kernel using <b>rdev</b>)
+
+<P>The kernel then checks your hardware and mounts the <b>root device</b> which contains the
+<b>root file system</b>. If <b>/linuxrc</b> is present at the root file system it is executed.
+Next <b>init</b> is started. Init is the parent of all the other processes that will run in your Linux OS,
+and as a good parent, it will watch these processes and start/stop/re-launch them if things changes.
+(This process creation is done by the <b>fork</b>=clone_me and <b>execve</b>=replace_me system calls.)
+<P>Init takes all information from <b>/etc/inittab</b> which in turn refers to scripts named <b>/etc/rc...</b>
+to do the system setup. Inittab also has an entry to start <b>getty</b> for every virtual console.
+
+<P>Getty will launch <b>/bin/login</b> and after a user has logged in, login starts the users
+default shell (found in <b>/etc/passwd</b>) in the users home directory. Then the shell will
+execute the users <b>profile</b>. If the user exits the shell init will re-run (<b>respawn</b>) getty.
+
+<P>If /etc/init is not present the shell <b>/bin/sh</b> is started 
+(in the hope that some intelligent operator will be present to tell it what to do next).
+
+<P>More info can be found at <A HREF="http://www.linuxdoc.org" target="_blank">Linux Documentation Project</A>
+and the man pages of init and inittab.
+</P>
+
+<H2><A NAME="ss4">4. Compile the Linux kernel</A></H2>
+<P>Compiling the kernel is easy and is done with the following commands:
+<pre>
+    cd /usr/src/linux
+    make xconfig      (kernel configuration)
+    make clean        (cleanup old objects)
+    make dep          (make all dependencies)
+    make zImage       (compile the kernel, this can take a while)
+</pre>
+<P>With the kernel configuration utility 'make xconfig' you can select each feature 
+to compile into the kernel statically, modular or not at all. 
+You can remove everything you'll never need.
+For the file systems I choose minix and dos. Because <b>minix</b> will be my root file system on
+<b>ramdisk</b>, minix and ramdisk must be compiled in statically.<BR>
+For some special devices like the DiskOnChip flash driver you first need to <b>patch</b> the kernel sources,
+and then recompile the kernel.<BR>
+After a successful compilation the new kernel image is found at <b>arch/i386/boot/zImage</b>.
+</P>
+
+<H2><A NAME="ss5">5. Build an initial ramdisk image</A></H2>
+<P>The minimum root file system should contain the following:
+<pre>
+    /lib/libc.so5      /lib/ld-linux.so.1
+    /etc/ld.so.cach    /bin/sh
+    /dev/console       /dev/null
+    /dev/ram           /dev/systty
+    /dev/tty1          /dev/tty2	
+</pre>
+We could keep it simple and just run one application and named it /bin/sh,
+but mostly we need more so add the following:
+<pre>
+    /sbin/init   /etc/rc
+    /bin/mount   /bin/cat
+    /bin/cp      /bin/echo
+    /dev/fd0	 /proc
+    /mnt         /linuxrc	 	
+    /bin/star    /bin/zcat     (or tar / gzip to install tgz packages)
+</pre>
+You can strip down commands by executing <code><b>objcopy</b> --strip-all <i>srccmd dstcmd</i></code>
+(for libraries use <code>objcopy --strip-debug <i>srclib dstlib</i></code>.)<BR>
+When you add commands you must also include the libraries used. The <code><b>ldd</b></code> command
+gives you a list of all the libraries used by a command.<BR>
+There are small versions of commands available, frequently used is <b>ash</b>, a tiny shell, and
+<A HREF="http://www.busybox.net/" target="_blank">busybox</a>. Busybox contains different commands in just one binary
+and spare you a lot of ram / disk space.<BR>
+<P>To build a ramdisk image we will use the loop device. (if necessary enable this by <code>insmod loop.o</code>)
+Copy the files above in a sub dir e.g. <code>rootfs/</code> then execute the following 
+commands:
+<pre>
+    dd if=/dev/zero of=rootfs.img bs=1k count=400  (make an empty file of 400k)
+    mkfs.minix -c rootfs.img                       (make a file system on it)
+    mount -o loop -t minix rootfs.img /mnt         (mount this as loopback device)
+    cp -av rootfs/* /mnt                           (copy my rootfs to the loopback device)
+    umount /mnt                                    (un mount the loopback device)
+    gzip -v9 -c rootfs.img >rootfs.gz              (compress it into rootfs.gz)
+</pre>
+This will make a compressed ramdisk image <code>rootfs.gz</code>.<BR>
+Maybe its best to keep the rootfs as small as possible. You can always install more features
+as described below. This way its easier to upgrade, change or download new features.
+</P>
+
+<H2><A NAME="ss6">6. Build and install additional packages</A></H2>
+<P>To add more utilities to your system, just copy everything you need ( a root tree) 
+into a sub dir e.g. <code>pack_01</code>.
+Then compress everything using <b><code>cd pack_01; tar -zcpf ../pack_01.tgz * </code></b>
+Be sure to include all dependencies (libraries, configurations /etc/...) in the packages.
+<P>To install this at boot time copy all the packages to /pack, and inittab and rc to /etc of
+our boot device.
+If our boot device is a dos formatted floppy at /dev/fd0 then
+linuxrc (which is in rootfs.gz) can look like:
+<pre>
+    #--- /linuxrc ---
+    #!/bin/sh
+    mount -t dos /dev/fd0 /mnt
+    cp /mnt/etc/* /etc
+</pre>
+Linuxrc copies everything from /etc on our boot device to /etc on the root device.<BR>
+A simple /etc/inittab and /etc/rc:
+<pre>
+    #--- /etc/inittab ---
+    #syntax  id : runlevel : action : path
+    id:2:initdefault:
+    si::sysinit:/etc/rc
+    01:12345:respawn:/sbin/getty 38400 tty1
+    02:2345:respawn:/sbin/getty 38400 tty2
+	
+    #--- /etc/rc ---
+    #!/bin/sh
+    echo -n > /etc/mtab          (write new mtab)
+    mount -o remount -t minix /dev/ram /
+    mount -o remount -t proc proc /proc
+    mount -o remount -t dos /dev/fd0 /mnt
+    PACKAGE=`ls /mnt/pack`       (get a list of all packages)
+    for f in $PACKAGE; do
+        zcat &lt $f | star          (decompress and install every package found)
+    done
+    ...
+</pre>
+If you run out of ramdisk you can always mount some more:
+<pre>
+    mkdir /usr
+    mkfs.minix -i 400 /dev/ram1
+    mount -t minix /dev/ram1 /usr
+</pre>
+You can add your own kernel boot parameters (e.g. <code>loadlin.exe zimage initrd=rootfs.gz root=/dev/ram mypar1=test1 mypar2=test2 </code>) and get them into your script.
+An easy way to do this:
+<pre>
+    cat /proc/cmdline >/etc/cmdline
+    echo -n "f=fix" >>/etc/cmdline
+    . /etc/cmdline
+    echo $mypar1
+    echo $mypar2
+</pre>
+</P>
+
+<H2><A NAME="ss7">7. Putting everything together</A></H2>
+<P>We are almost there now. Just copy the linux kernel, ramdisk image, etc and packages 
+to your boot device and install a boot manager. For syslinux this boot dir contains:
+<pre>
+    /ldlinux.sys
+    /syslinux.cfg
+    /zimage
+    /rootfs.gz
+    /etc/inittab
+    /etc/rc
+    /pack/pack_01.tgz
+    /pack/pack_02.tgz
+</pre>
+Where syslinux.cfg should contain:
+<pre>
+    timeout 0
+    default zimage
+    append=load_ramdisk=1 initrd=rootfs.gz root=/dev/ram
+</pre>
+You can also put all this stuff in a sub dir of your hard drive and launch linux from the harddisk
+with:<BR>
+<code>loadlin.exe zImage initrd=rootfs.gz root=/dev/ram</code>
+<P>Thats all. Good Luck!</P>
+
+<H2><A NAME="ss8">
+8. Download and Quick start</A></H2>
+<UL>
+	<LI>After downloading the floppy disk image <a href="./pub/emblin.img">emblin.img</a>
+		use the command<BR><b><code>dd if=emblin.img of=/dev/fd0</code></b> to make a bootable
+		floppy.<BR>
+		From DOS you can run the dos app <a href="./pub/rawrite3.com">rawrite3</a> or <a href='http://www.winimage.com/winimage.htm'>WinImage</a> to build the floppy.
+	<LI>Reboot from this floppy and type <code>config.cmd</code> to edit the one and only configuration script <code>rc.cmd</code>.
+	    Set your network_interface eth0, ip_addr, network_mask, default gateway, DNS ...
+		Save your settings with Esc, Datei, Beenden, Y and restart Emblin.
+	<LI>From another network stations browse to EmbLin with your favorite navigator (enter <code>http:ip_addr</code>) 	and you will get the <a href="./default.html">EmbLin</a> home page.
+	    Try out the <a href="./cgi-bin/sysstat.htm">sysstat CGI-script</a>, ftp, telnet, tftp.<BR>
+		<font size="-0">
+	    PS: If you run the windows telnet use Ctrl-J (LF) instead of Enter (CR)
+		</font>
+	<LI>You can also use EmbLin as a client; lynx, ftp, telnet and tftp
+	<LI>For more help you can always try help.
+	<LI>This floppy also contains the sources of a tiny init, extracted from an old version
+		of busybox I modified. If you build your own Linux system use the new
+		<A HREF="http://www.busybox.net/" target="_blank">busybox</a> which has much more features now
+		(but did not compile on my system).<BR>
+		Install with <code>tar -xzvpf source.tgz /EmbLin</code> and do the reverse of the
+		<code>mypack/build.pac</code> script.
+</UL>
+
+<H2><A NAME="ss9">9. Useful links</A></H2>
+<UL>
+<LI><A href="./default.html" target="_parent">EmbLin Home</A></LI>
+<LI><A HREF="http://www.linux-embedded.com/howto/Embedded-Linux-Howto.html" target="_blank">Embedded Linux Howto</a>
+<LI><A HREF="http://www.linuxdoc.org" target="_blank">Linux Documentation Project</A>
+<LI><A HREF="http://www.tldp.org/HOWTO/Bootdisk-HOWTO/" target="_blank">Linux Bootdisk HOWTO</a>
+<LI><A HREF="http://www.linux-embedded.com" target="_blank">Linux-Embedded</a>
+<LI><A HREF="http://www.linux.org" target="_blank">www.linux.org</A></LI>
+<LI><A HREF="http://www.linux.com" target="_blank">www.linux.com</A></LI>
+</UL>
+<HR>
+<DT>
+<DD><A HREF="http://www.muquit.com/" name="mhttpd">
+		<IMG src="./img/mhttpd.gif" alt=" MHTTPD " border=0></A>&nbsp
+	<A HREF="http://pocket-linux.coven.vmh.net/" name="pocket-linux" target="_blank">
+		<IMG src="./img/pock_lin.gif" alt="Pocket Linux" border=0></A>&nbsp
+	<A HREF="http://www.toms.net/rb/" name="tomsrb"> 
+		<IMG src="./img/tomsrb.gif" alt="Tomsrb Linux" border=0></A>
+	<A HREF="http://www.psychosis.com/linux-router/" name="lrp" target="_blank"> 
+		<IMG src="./img/lrp.gif" alt="Linux Router Project" border=0></A>
+</DL>
+<table width="250" align="center" bgcolor="#D8D0D0"id="titl"><tr>
+<th align="center"><a href="http://counter.mycomputer.com/">
+<img src="http://counter.mycomputer.com/c.count?u=EmbLin2&c=1" alt="count" border=0></a>
+</th></tr></table>
+<HR>
+<A HREF="#toc1"><IMG SRC="prev.gif" ALT="Previous"></A>
+<IMG SRC="next.gif" ALT="Next">
+<A HREF="#toc1"><IMG SRC="toc.gif" ALT="Contents"></A>
+</BODY>
+</HTML>

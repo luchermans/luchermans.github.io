@@ -1,0 +1,177 @@
+<HTML>
+<HEAD>
+<TITLE>Linux Quick-Ref</TITLE>
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+<style type="text/css">
+	i { color: #404000; }
+	B { color: #004040; }
+</style>
+</HEAD>
+<BODY bgcolor="#f8f0f0" >
+<H1>Linux Quick-Ref</H1>
+<P><HR><EM>things I always forget  &nbsp &nbsp last update 26-02-02</EM><HR></P> 
+<P>
+<DT><B>config xwindows</B>
+<DD>XF86Setup
+<DD>/etc/XF86Config <i> &nbsp &nbsp config file </i>
+
+<DT><B>kernel compiling</B>
+<DD>cd /usr/src/linux
+<DD>make xconfig <i> &nbsp &nbsp  or</i> menuconfig, config
+<DD>make clean  <i> &nbsp &nbsp  (cp fl.35 fl.o)</i>
+<DD>make dep
+<DD>make zImage <i> &nbsp &nbsp  or </i>zdisk
+<DD>...
+<DD>make mrproper <i> &nbsp &nbsp  deletes zImage...</i>
+
+<DT><B>modify Kernel image</B>
+<DD>rdev zImage /dev/fd0 <i> &nbsp &nbsp  </i>set root device</i>
+<DD>rdev -r zImage 32768
+<DD><i> &nbsp &nbsp  value = bit 0-10 Offset in 1024 bytes of ramdisk
+<DD> &nbsp &nbsp bit 14 load ramdisk
+<DD> &nbsp &nbsp bit 15 prompt before loading root file system</i>
+
+<DT><B>make file system</B><DD>mke2fs -m 0 /dev/fd0 &nbsp &nbsp <i>create ext2 file system on floppy disk</i>
+<DT><B>mount</B><DD>mount -t ext2 /dev/fd0 /mnt/floppy
+<DD>umount /mnt/floppy
+
+<DT><B>loopdevice</B>
+<DD>insmod loop.o
+<DD>dd if=/dev/fd0 of=fdisk.img <i> &nbsp &nbsp  make floppy-disk image</i>
+<DD>losetup /dev/loop0 fdisk.img <i> &nbsp &nbsp  link fdisk.img to /dev/loop0</i>
+<DD>mount -t msdos /dev/loop0 /mnt/loop <i> &nbsp &nbsp  mount image</i>
+<P>
+<DD>dd if=/dev/zero of=file.img bs=1k count=360 <i> &nbsp &nbsp  make ext2 image</i>
+<DD>mke2fs -m 0 file.img <i> &nbsp &nbsp  create fs on it</i>
+<DD>mount -o loop file.img /mnt/loop <i> &nbsp &nbsp  mount it</i>
+<DD>rmmod loop.o
+
+<DT><B>check dependencies</B>
+<DD>ldd /bin/execute  <i> &nbsp &nbsp  show dependencies</i>
+<DD>file /lib/libname <i> &nbsp &nbsp  lib loader  (Qmagic=a.out=ld.so,  ELF=ld-linux.so)</i>
+<DD>nm -C -u -g fname <i> &nbsp &nbsp  show symbols of lib obj bin (<B>u</B>ndefined <B>g</B>externals)</i>
+
+<DT><B>copy</B>
+<DD>cp -a src1 src2 dstfiles
+<DD>cp -arv /src/* /dstdir  <i> &nbsp &nbsp  (<B>r</B>ecursive <B>v</B>erbose)</i>
+<DD>objcopy --strip-all xsrc xdest <i> &nbsp &nbsp  strip xecutes</i>
+<DD>objcopy --strip-debug lsrc ldeststripedexe
+
+<DT><B>link</B>
+<DD>ln src hardlink<i> &nbsp &nbsp  points to physical place</i>
+<DD>ln -s src softlink<i> &nbsp &nbsp  points to src path</i>
+
+<DT><B>manpage</B><DD>man cmd/fie<DD>apropos keyword
+
+<DT><B>printing</B><DD>man -t mount | lpr -Pps <i> &nbsp &nbsp  manpage printing</i>
+<DD>enscript textfile
+
+<DT><B>dir list</B><DD>ls -al  <i> &nbsp &nbsp  show <b>a</b>ll  <B>l</B>ong</i>
+<DD>ls -ltru <i> &nbsp &nbsp  list last <B>u</B>access <B>t</B>ime <B>r</B>evers order</i>
+
+<DT><B>ps</B><DD>ps x <i> &nbsp &nbsp  <B>x</B> also shows deamons</i>
+
+<DT><B>dump</B><DD>cat /dev/vcs1 <i> &nbsp &nbsp  screendump tty1</i>
+<DD>dmesg <i> &nbsp &nbsp  dump kernel messages</i>
+
+<DT><B>find</B><DD>find / -iname fnam* <i> &nbsp &nbsp  find file<b>name</b> <B>i</B>gnore case, start in / </i>
+<DD>grep -i -n string fnam* <i> &nbsp &nbsp  find string in files / <B>i</B>gnore case</i>
+
+<DT><B>compare</B><DD> diff file1 file2
+<DD>comm -3 file1 file2<i> &nbsp &nbsp  compare file1 - file2 <B>3</B>show differance</i>
+<DD>diff -Naur olddir newdir >name.patch
+<DD>cd oldir; patch -p1 &lt name.patch
+
+<DT><B>compressing</B>
+<DD><B>gzip</B> -v9 -c f1 f2 &gt;file.gz  <i> &nbsp &nbsp  compress file f1 f2</i>
+<DD>gzip -<B>v</B>9 -c f3 &gt;&gt;file.gz  <i> &nbsp &nbsp  add file f3</i>
+<DD>gzip -<B>l</B> -c file.gz  <i> &nbsp &nbsp  -<B>d</B> (<B>d</B>ecompress)</i>
+<DD><B>tar</B> -t<B>z</B>f file.tgz <i> &nbsp &nbsp  <B>l</B>ist <B>f</B>iles/dir compr file   <B>z</B>=gzip <B>j</B>=bzip2</i>
+<DD>tar -c<B>z</B>v<B>f</B> file.tgz dir/* <i> &nbsp &nbsp  <B>c</B>ompress dir </i>
+<DD>tar -xz<B>v</B>pf file.tgz dir <i> &nbsp &nbsp  e<B>x</B>tract dir  <B>v</B>erbose</i>
+<DD>zcat &lt file.tgz | star &nbsp &nbsp <i>extract</i>
+<P>
+<DT><B><U>Shell scripts</B></U> (ash)
+<DD>#!/bin/sh
+<DD>. /path/take_commands_from_this_file
+<DD>cd() { command cd $@; PS1="`pwd`# "; }
+<DD>cmd &gt;file_stdout
+<DD>cmd 2&gt;file_stderr
+<DD>VAR=<B>`</B>cat /file<B>`</B>
+<DD>[ <B>$</B>VAR = 12 ] &amp;&amp; <i> &nbsp &nbsp  only_if_true</i>
+<DD>[ <B>$</B>VAR = 12 ] || <i> &nbsp &nbsp  only_if_false</i>
+<DD>if test -x cmd; then <i> &nbsp &nbsp  exec cmd</i>
+<DD>else echo -n <i> &nbsp &nbsp  cmd not executable</i>
+<DD>fi
+<DD>for $ITEM in "A B C"; do list; done
+<DD>while exp; do list; break; continue; done
+<DD>case "AL AB CD" in
+<DD>A|B) list;;
+<DD>C?)  list;;
+<DD>esac
+<P>
+<DT><B><U>Linux Boot</U></B>
+<DD>lilo / loadlin -&gt; decompress &amp; start kernel
+<DD>mount root device (decompress rootimg.gz)
+<DD>/linuxrc
+<DD>/sbin/init-&gt; /etc/inittab -&gt; /etc/rc.. -&gt; getty -&gt; login -&gt; sh -&gt; profile(s)
+
+<DT><B>lilo.conf</B>
+<DD>boot=/dev/fd0
+<DD>install=/boot/boob.b
+<DD>map=/boot/map
+<DD>read-write
+<DD>compact
+<DD>prompt
+<DD>image=/zImage
+<DD>label=Linux
+<DD>root=/dev/fd0
+<P><DD><B>lilo</B> installlilo -v -C lilo.conf -r /mnt/floppy
+<P><DD><B>loadlin.exe</B> zImage initrd=fdroot.gz root=/dev/ram 
+<P>
+<DT><B><U>Linux Network</U> config</B>
+<DD><B>ifconfig </B> lo    inet 127.0.0.1      netmask 255.0.0.0
+<DD>ifconfig  eth0  inet 204.204.204.13 netmask 255.255.255.0
+<DD><B>route</B>     add   <B>-</B>net 127.0.0.0      netmask 255.0.0.0      dev lo
+<DD>route     add   <B>-</B>net 204.204.204.0  netmaks 255.255.255.0  dev eth0
+<DD>route     add   default gw 204.204.204.100
+<P>
+<DD><B>/etc/hosts</B><DD>ip.ip.ip.adr  fqhostname.domain.where alias nickname
+<DD><B>/etc/resolf.conf</B><DD>DNS1<DD>DNS2
+<P>
+<DT><B><U>Linux GCC</U></B>
+<DT><B>compiling</B>
+<DD></B>gcc <B>-m386 -O2 -Wall -o </B>execname src1.cc src2.cc
+<DD><B>-o</B> execname (a.out)<B> &nbsp &nbsp -c</B> compile only
+<DD><B>-O0</B> no optimalisation <B> &nbsp &nbsp -S</B> generate asm source <B> &nbsp &nbsp -f</b>verbose-asm
+<DD><B>-g</B> enable debugging<B> &nbsp &nbsp -l</B> libname
+<DD>default file ext src<B>.c</B> src.cc asm<B>.s</B> obj<B>.o</B> arch<B>.a</B> lib.a 
+
+<DT><B>debugging</B>
+<DD>gdb execname -tty=/dev/tty8
+<DD>run arguments ctrl-c
+<DD><B>l</B>ist fie &nbsp &nbsp <B>b</B>reak
+<DD><B>n</B>ext<B> &nbsp &nbsp s</B>tep<B> &nbsp &nbsp c</B>ontinue &nbsp &nbsp <b>f</b>inish
+<DD>print varname &nbsp &nbsp set varname=value
+<DD>backtrace<B> &nbsp &nbsp q</B>uit &nbsp &nbsp <B>p</B>rint /x
+<DD>gdb execname core  &nbsp &nbsp (coredump)
+<DD>gproff execname gmon.out  &nbsp &nbsp (compile with option <B>-pg</B>)
+
+<DT><B>Makefile</B>
+<DD>LDFLAGS=
+<DD>LIBRARIES=
+<DD>CC= gcc
+<DD>CFLAGS= -Wall -m386 -o2
+<DD>mySRC= src1.c src2.c
+<DD>OBJECTS= $(patsubst %.c, %.o, $(mySRC))
+<DD><B>all:</B> execname $(LINKS)
+<DD><B>execname:</B> $(OBJECTS)
+<DD>$(CC) $(CFLAGS) $(LDFLAGS) -o execname $(OBJECTS) $(LIBRARIES)
+<DD>objcopy --strip -all execname execstrip
+<DD><B>clean:</B>
+<DD> - rm -f $(OBJECTS) *~
+</BODY>
+</HTML>

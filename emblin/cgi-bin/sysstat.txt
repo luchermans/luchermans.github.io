@@ -1,0 +1,32 @@
+#!/bin/sh
+echo Content-type: text/html
+echo
+
+cat <<EOM
+<HTML>
+<HEAD><TITLE>System Status</TITLE></HEAD>
+<BODY bgcolor="#f0f0ff">
+$#
+<H1 align="center">E M B L I N</H1>
+<H2>System Status</H2>
+<P>
+EOM
+echo "<DL>"
+echo "<DT><B>Version</B><DD><pre>";		cat /proc/version
+echo "</pre><DT><B>Cpu Info</B><DD><pre>";	cat /proc/cpuinfo
+echo "</pre><DT><B>Proces Status</B><DD><pre>";
+	for i in /proc/[0-9]*/;	do
+		read a b c x < $i/stat
+		echo "$a	$c	$b	`cat $i/cmdline`"
+	done
+echo "</pre><DT><B>Meminfo</B><DD><pre>";	cat /proc/meminfo
+echo "</pre><DT><B>Disk Usage</B><DD><pre>";	df
+echo "</pre><DT><B>Date</B><DD><pre>";		date
+echo "</pre><DT><B>Uptime</B><DD><pre>";	cat /proc/uptime
+echo "</pre><DT><B>Loadavg</B><DD><pre>";	cat /proc/loadavg
+echo "</pre></DL>"
+
+cat <<EOM
+</BODY>
+</HTML>
+EOM

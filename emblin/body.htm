@@ -1,0 +1,419 @@
+<HTML>
+<HEAD>
+<TITLE>EmbLin</TITLE>
+<META NAME="keywords" CONTENT="Linux, Embedded, EmbLin">
+<!----------------------------------------
+ (C) by Luc Hermans              DoBiT.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+<SCRIPT LANGUAGE="JavaScript"><!--
+//--global vars
+var Today=new Date();
+var daysdone, daystogo;
+var Email="", You="";
+
+//I started from 21/12/1999
+daysdone=30*(Today.getMonth())+Today.getDate()+15;
+//until 15 mei 2000 ?
+daystogo=(5*30+15) - (daysdone-10);
+
+function getCookie(nr)
+{  var i,l, coki=document.cookie+"";  
+	i=coki.indexOf(nr+ "=");	i+=1;
+	l=coki.indexOf(";",i);	if (l<i)	l=i+64;
+	if (i>1) 	return coki.substring(i+1, l);
+	return "";
+}
+function setCookie(nr, coki)
+{	a=getCookie(nr);
+	if (a!=coki)
+	document.cookie="@90000000000"+ nr+ "="+coki+";expires=Wednesday, 31-Dec-20 23:12:41 GMT ";
+}
+
+function welcome(doe)
+{  var a,j,k;
+	a=getCookie(0);
+	j=a.indexOf("@")+0;
+	k=a.indexOf(".")+0; if (k>0 && k<j)	j=k;	
+	k=a.indexOf("_")+0; if (k>0 && k<j)	j=k;	
+	k=a.indexOf("-")+0; if (k>0 && k<j)	j=k;	
+	if (j>1)	
+	{	Email=a;
+		You=a.substring(0, (j>9)?9:j );
+		You=You.substring(0,1).toUpperCase()+You.substring(1,64);
+		if (doe)	pengu_say("Hello " + You , 1000);
+	}
+}
+
+function pengu_say(txt, del)
+{	win=window.open('','Pengu','status=no,width=300,height=200');
+    win.document.write("<HTML><HEAD><TITLE>Pengu Says</TITLE></HEAD><BODY>" +
+			"<table><tr><td><IMG src='img/linux.gif'></td>" +
+			"<td><h1>" + txt.fontcolor("#004040") + "</h1></td></tr></table>" +
+			"</BODY></HTML>");
+	setTimeout('win.close()', del);
+}
+
+function progresBar(Hi, Wi, prog)
+{	document.write(
+	'<IMG name="lbar" src="img/lbar.gif" width=' +prog+ ' height='+Hi+' border=1>' +
+	'<IMG name="rbar" src="img/rbar.gif" width=' +(Wi-prog)+ ' height='+Hi+' border=1>');
+}
+
+function chkEmail(a)
+{ var i,j;
+	a+="";
+	if (a == "")	a=Email;
+	if (a == "")	a=document.money.you.value;
+	i=a.indexOf("@");
+	j=a.indexOf(".",i+1);
+	if ( i>1 && j>(i+2) && a.length>(j+2) )
+	{	setCookie(0, a);
+		Email=a;	welcome(0);
+		return true;
+	}
+	confirm("Please enter your Email");
+	document.frm.you.focus();
+	document.frm.you.select();
+	return false;
+}
+
+function chkSpons(f)
+{ var a=document.money.you.value+"";
+	if (a=="")	a=Email;
+	if (!chkEmail(a))	return false;
+	if 		   (document.money.unit[0].checked)	a="Euro";
+	else	if (document.money.unit[1].checked)	a="Dollar";
+	else { 	alert("Please select Euro or Dollar"); return false; }
+	f.frname.value="Luc";
+	f.fremail.value="smultita@gmail.com";
+	f.tomail.value=Email;
+	f.tosubj.value="Emblin Sponsor";
+	f.tomesg.value="\n" +
+	"Dear " + You + ",\n" +
+	"    .~.     Thank you for taking the time to try out EmbLin. I'm happy to\n" +
+	"    /V\\     hear it's being useful for you, but ...\n" +
+	"   // \\\\    Don't forget to send 5 " +  a + " to the following address:\n" + 
+	"  /(   )\\   Luc Hermans, Scheppersstraat 29, 2200 HERENTALS, BELGIUM\n" +
+	"   ^`~'^    \n" +
+	"PS. For more info feel free to contact me at smultita at gmail.com       \n" +
+	"    Please put the keyword 'emblin' in the subject of your email.\n\n" +
+	"Best Regards,\nLuc\n";
+//	alert("fremail=" + f.frname.value+ " " + f.fremail.value + "\ntomail=" + f.tomail.value + "\ntomesg=" + f.tomesg.value );
+	test=window.open('','test','status=no,width=300,height=200');
+    setTimeout('test.close()', 8000);
+	return true;
+}
+
+function sndComments(f)
+{ var a=document.money.you.value+"";
+	if (a=="")	a=Email;
+	if (a=="")	a="nobody@nodomain.nowhere"
+	f.fremail.value=a;
+	f.tomail.value="smultita@gmail.com";
+	f.tosubj.value="Emblin Comment";
+	if (f.tomesg.value=="")
+		return false;
+	f.frname.value=navigator.platform;
+//	alert("fremail=" + f.frname.value+ " " + f.fremail.value + "\ntomail=" + f.tomail.value + "\ntomesg=" + f.tomesg.value );
+	test=window.open('','test','status=no,width=300,height=200');
+    setTimeout('test.close()', 8000);
+	return true;
+}
+
+function startDownload(a)
+{	if (chkEmail(a))	window.open('download.htm', 'newWin','status=no,width=450,height=250');		
+}
+
+function setAdv()
+{ var a=Email, i=0;
+//	if (chkEmail(a))
+	{	for (j=1; j<3; ++j) 	
+		{	a=getCookie(j);
+			if (j==1)	a=prompt("Enter the full path or URL to the image you want to advertise\n" +					 "e.g.: c:\\windows\\setup.bmp", a)+ "";
+			else		a=prompt("Enter the full URL to the link you want to advertise\n" +
+								 "e.g.: //www.alltheworld.com/...    then " +
+							     "Press reload to view changes", a)+ "";
+			if (a!="" && a!="null")
+			{	while (i >= 0)	//replace all \ with /
+				{	i=a.indexOf("\\");
+					if (i>0)	a=a.substring(0,i) +  "/" + a.substring(i+1,80);
+				}
+				setCookie(j,a);
+			}
+		}
+	}
+}
+
+function putAdv()
+{ var i,l,a,b;  
+	a=getCookie(1);
+	if (a!="")
+	{	b=getCookie(2);
+		if (a.charAt(0)!="/")	a="file://" + a;
+		document.write('<a href="http:' + b + '" align="center">' +
+			'<IMG src="' + a + '" alt="Your FREE advertisement HERE" border=0></a>');
+	} 	//else	document.write("<BR><img src='img/nowar4oil.jpg' width='330' height='150' border='2'>");
+	else 
+	document.write("<BR><h3>Your FREE advertisement HERE<br><a href='http://www.touchscreens.be' target='_blank'>www.TouchScreens.be</a></h3>");
+//	document.write( "<BR>cookie:" + document.cookie)
+}
+//--global vars
+var col=0xe0, up=0;
+var R=0x10000, G=0x100, B=0x1;
+
+function smooth(stop)
+{	smooth.stop=stop;
+	if (smooth.stop)	return;
+	if (navigator.appName.indexOf("Explo")<0 || parseInt(navigator.appVersion)<4)
+	{	smooth.stop=1;	return; }
+	if (up%2)	//counting collor up (lighter)
+	{	if (col<0xf0)	col=col+4;	
+		else 	//max count reached shift RGB, start counting down
+		{	++up;
+			if (R<0x10000)	R*=0x100; else R=1;
+			if (G<0x10000)	G*=0x100; else G=1;
+			if (B<0x10000)	B*=0x100; else B=1;
+	  	}
+	}
+	else		//counting collor down (darker)
+	{	if (col>0xa0)	col=col-4;
+		else		++up;
+	}
+	titl.bgColor=tb1.bgColor=(up<6?0xf0:col)*R+col*G+0xf0*B;
+	tb2.bgColor=(up>=6?0xf0:col)*R+col*G+0xf0*B;
+	setTimeout("smooth(0)",200);
+}
+function dont()	{window.open('./dont.htm','_blank','status=no,width=250,height=170');}
+function ani_hit() {;}
+Email=getCookie(0);
+
+//--></SCRIPT>
+</HEAD>
+<BODY bgcolor="#f8f0f0" onLoad="setTimeout('welcome(1)',4000)">
+<a name="emblin"></a>
+
+<table align='center'><tr>
+<td width='175' align='left'>&nbsp </td>
+<td>
+<table width="450" border="3" align="center" bgcolor="#004040"><tr>
+<td><font color="#fff8f0"><font size=+4>&nbsp EmbLin &nbsp &nbsp </font><font size=-1>by Luc Hermans <BR>
+<CODE>smultita at gmail.com</CODE></font></font></td></tr></table>
+</td>
+<td width='175' align='right'>&nbsp</td>
+</tr></table>
+
+<table align="center"><tr><td id="tb1" align="left"> 
+<a href="javascript:setAdv();">Your<BR>Logo &gt </a>
+</td><td width="490" height="40" align="center"><script><!--
+putAdv();//--></script>
+</td><td id="tb2" align="right">
+<a href="javascript:setAdv();">Your<BR>&lt Link</a>
+</td></tr></table>
+
+<HR>
+This web site is made not only to receive the certification <b>Master in Netwerken & Multimedia</b>
+<BR>but also to make life more easy for starters in <b>embedding Linux</b>.
+<BR>It is also my first HTML/JavaScript experiment. So sorry if it breaks ...  &nbsp
+( your <script><!--
+document.write(navigator.platform);//--></script> system )
+<HR>
+<table border="0" align="center" background="./img/snow.gif" bgcolor="#D8D0D0"><tr>
+<td><a href="javascript:dont();"><IMG src="./img/dont.gif" alt="don't you dare..." border=0></a></td>
+<td><a href="http://www.littleigloo.org" target="_blank"><IMG src="./img/igloo.gif" alt="igloo" border=0></a></td>
+<td><a href="http://www.icewalk.com" target="_blank"><IMG src="./img/pingegg.gif" alt="pingegg" border=0></a></td>
+<td><a href="http://www.dobit.com" target="_blank"><IMG src="./img/dobitani.gif" alt="where I work" border=0></a></td>
+</tr></table>
+<b>Warning:</b><font size="-1"> If you <i>don't</i> like any jokes today 
+<i>don't</i> click on any <i>don't</i> buttons and <i>don't</i> enter your Email !<BR>
+This page only uses browser site html and javascript (except for the free counter and mail services).<BR>
+If you get suspicious take a look at the html source. </font>
+<HR>
+<DL>
+<DT><A name="whats"></A><H3>What is Emblin?</H3>
+	<DD>Emblin stands for <STRONG>Emb</STRONG>edded <STRONG>Lin</STRONG>ux
+	<font size="-1"><br><br>
+	I started this project at June 2000, so it's rather old, but you could still use it as a guidline
+	for building an embedded linux.<br>
+	For updated/more recent projects see the <A HREF="#refs">References and Links</a> at the end.
+    <br><br></font>
+	<DD>Specifications:
+	<UL><LI>Minimum Linux OS for embedded systems (or other mini systems)
+		<LI>Modular build, easy to strip down, build up
+		<LI>Easy to configure by one configuration script
+		<LI>All fits one 1 bootable Floppy
+		<LI>Contains HTTP + <a href="./cgi-bin/sysstat.htm">CGI</a>, FTP, TELNET, TFTP server
+		<LI>Include inet clients, lynx, snarf (=wget like)
+		<LI><font color="red">New: </font>PPP dialup to your ISP
+		<LI><font color="red">Newer: </font>mini SNMP agent 
+		<LI>Include this web site
+	</UL>
+		
+<DT><A name="reqs"></A><H3>System requirements</H3>
+	<DD>The minimum system requirements are:
+	<ul><LI>i386 CPU
+		<LI>16 Mb RAM (8Mb if you leave out some modules)
+		<LI>Bootable Floppy drive, Flash disk (DOC) or Hard disk (I DE)<BR>
+		    (supports only DOS and minix file system)
+		<LI>Ethernet interface NE2000 (ISA or PCI)
+		<LI>Keyboard and VGA is easy for configuration but not necessary
+		<LI>For detailed info look at  <a href="./cgi-bin/sysstat.htm">sysstat</a>
+	</UL>
+	<DD>
+
+<DT><A name="limi"></A><H3>Limitations</H3>
+	<DD>Practically all components are copyrighted by the 
+	<a href="http://www.fsf.org/copyleft/gpl.html">GNU General Public License</a>.<BR>
+	Within these strictures you may redistribute, copy and/or modify it.<BR>
+	It has NO WARRANTIES. If it breaks you keep both pieces.
+	
+<DT><A name="stats"></A><H3>Project Status</H3>
+	<DD>For my work at <A href="http://www.dobit.com" target="_blank">
+	<img src="./img/dobitani.gif" border=0 alt="DoBiT"></a>
+	I developed software for an embedded system under DOS.
+	Later we needed a TCP/IP stack, found Linux and ported everything
+	(including a soft multi-tasker<a href="./smultita.htm" target="_top"> sMultiTa</a>) from DOS to Linux.<BR>
+	I was impressed about the strength of Linux in such a small device.
+	During my <em>WWW</em> (re)search I found some interesting sources, binaries and scripts.
+	I modified some things, add some things, put them all together on a floppy
+	and give it the name <em>EmbLin</em>.<BR><BR>
+	<DD><SCRIPT><!--
+	progresBar( 7, 400, (400*daysdone)/(daysdone+daystogo));//--></SCRIPT><BR><BR>
+	For my certification in <em>Master in Networking & Multimedia</em> this should be finished on 10 June 2000.
+	So I still have	<STRONG><SCRIPT><!--
+	document.write(daystogo);//--></SCRIPT></STRONG> days left.
+			
+<DT><A name="downs"></A><H3>Download</H3>
+	<DD><form name="frm">
+	The download button below will directly make you a bootable floppy !<BR>
+	But it only work for windows Internet Explorer <BR>
+	<input type="button" name="dwn" value="Don'tload" onClick="startDownload(document.money.you.value);">
+	<BR>
+	<BR>
+	Professional users better download the Bootable Floppy disk image from <b>http</b>:
+	<a href="./pub/emblin.img">emblin.img</a><BR><BR>
+	<b>Getting Started</b><UL>
+	<LI>After downloading the floppy disk image <a href="./pub/emblin.img">emblin.img</a>
+		download <a href="./pub/rawrite3.com">rawrite</a>
+		and run rawrite (from a full DOS prompt) to build the floppy.<BR>
+		Linux/Unix users use the command <b><code>dd if=emblin.img of=/dev/fd0</code></b>
+	<LI>Reboot from this floppy and type <code>config.cmd</code> to edit the one and only configuration script <code>rc.cmd</code>.
+	    Set your network_interface eth0, ip_addr, network_mask, default gateway, DNS ...
+		save your settings and restart Emblin.
+	<LI>From another network stations browse to EmbLin with your favorite navigator (enter <code>http:ip_addr</code>) 	and you will get the <a href="./default.htm" target="top">EmbLin</a> home page.
+	    Try out the <a href="./cgi-bin/sysstat.htm">sysstat CGI-script</a>, ftp, telnet, tftp.<BR>
+		<font size="-0">
+	    PS: If you run the windows telnet use Ctrl-J (LF) instead of Enter (CR)
+		</font>
+	<LI>You can also use EmbLin as a client; lynx, ftp, telnet and tftp
+	<LI>For more help you can always try help.
+		<LI>This floppy also contains the sources of a tiny init, extracted from an old version
+		of busybox I modified. If you build your own Linux system use the new
+		<A HREF="http://www.busybox.net" target="_top">busybox</a> which has much more features now
+		(but did not compile on my system).<BR>
+		Install with <code>tar -xzvpf source.tgz /EmbLin</code> and do the reverse of 
+		<code>mypack/build.pac</code> script.
+	</UL>
+	</form>
+	<form onsubmit="return sndComments(this);" action="cgi-bin/sndmail.asp" method="POST" name="sndCmd" target="test">
+	<b>Your comments ...</b><BR>
+	<table><tr><td rowspan="2"><textarea cols=50 rows=2 name="tomesg"></textarea></td><td>
+	<input type="hidden" name="tomail"><input type="hidden" name="tosubj">
+	<input type="hidden" name="frname"><input type="hidden" name="fremail">
+	<input type="reset" name="reset" value=" reset  "></td></tr><tr><td>
+	<input type="submit" name="submit" value="submit"></td>
+	</tr></table></form>
+	<form name="money">
+	<b>Your Email: </b><input type="Text" name="you" value=""><BR>
+	If you find this useful you can always sponsor EmbLin by sending<BR>
+	<input type="radio" name="unit" value="Euro"> 5 Euro &nbsp or
+	<input type="radio" name="unit" value="Dollar"> 5 Dollar
+	</form>
+	<form  onsubmit="return chkSpons(this);" action="cgi-bin/sndmail.asp" method="POST" name="spons" target="test">
+	<input type="hidden" name="tomesg">
+	<input type="hidden" name="tomail"><input type="hidden" name="tosubj">
+	<input type="hidden" name="frname"><input type="hidden" name="fremail">
+	<input type="submit" name="submit" value="Sponsor EmbLin">
+	</form>
+<DT><A name="todo"></A><H3>To Do</H3>
+	<DD>It should be interesting to implement following:
+	<UL><LI>Small DHCP, NFS server + client
+		<LI>Security ???
+		<LI>Minimum X-Windows (see <a href="http://www.thepub.nildram.co.uk/mirrors/2diskxwin/2diskXwin.htm">2DiskXWin</a>)
+		<LI>Make network interfaces modular
+		<LI>New linux kernel and library libc6 or <a href='http://www.uclibc.org'>uClibc</a>
+		<LI>Latest version of <A HREF="http://www.busybox.net/">busybox</a> and init
+		<LI><A HREF="http://tinylogin.busybox.net/">Tinylogin and iprout</a>.
+		<LI>Packages for PERL, JAVA ...
+		<LI>Then I discovered <a href="http://www.freesco.org/">FREESCO</a>
+		<LI>but now there is  <a href='http://tinycorelinux.com/'>TinyCore Linux</a>
+	</UL>
+	<DD>
+
+<DT><A name="refs"></A><H3>References</H3>
+<DD><A HREF="http://www.muquit.com/" name="mhttpd" target="top">
+		<IMG src="./img/mhttpd.gif" alt=" MHTTPD " border=0></A>&nbsp
+	<A HREF="http://pocket-linux.coven.vmh.net/" name="pocket-linux" target="top">
+		<IMG src="./img/pock_lin.gif" alt="Pocket Linux" border=0></A>&nbsp
+	<A HREF="http://www.toms.net/rb/" name="tomsrb" target="top"> 
+		<IMG src="./img/tomsrb.gif" alt="Tomsrb Linux" border=0></A>
+	<A HREF="http://www.psychosis.com/linux-router/" name="lrp" target="top"> 
+		<IMG src="./img/lrp.gif" alt="Linux Router Project" border=0></A>
+	<A HREF="http://www.gaertner.de/snmp/" name="cmu-snmp" target="top">CMU SNMP</A>
+    <A HREF="http://www.thepub.nildram.co.uk/mirrors/2diskxwin/2diskXwin.htm" target="top">
+		<IMG src="./img/linin1trans.gif" alt="Linux Router Project" border=0></A>
+</DL>
+<h3>Interesting links</h3>
+<ul>
+<li><a href='http://www.trinux.org/'>Trinux</a>
+<li><a href='http://www.math-inst.hu/~ekho/lowlife'>Lowlife -- a Linux floppy from scratch</a>
+<li><a href='http://www.linuxfromscratch.org/'>Linux From Scratch</a>
+<li><a href='http://freshmeat.net/' target='top'>FreshMeat.net</a>
+<li><a href='http://netstation.sourceforge.net/' target='top'>NetStation</a>
+<li><a href='http://diet-pc.sourceforge.net/' target='top'>Diet-PC</a>
+<li><a href='http://www.damnsmalllinux.org/' target='top'>Damn Small Linux (50MB)</a>
+<li><a href='http://tinycorelinux.com/' target='top'><font size=+1>TinyCore</font> Linux (10MB)</a>
+<li><a href='http://movix.sourceforge.net' target='top'>MoviX</a>
+<li><a HREF="http://embedded-linux.org" name="lem" target="top">Embedded-Linux.org</a>
+</ul>
+
+<p align="center"><font size=-1>
+Special thanks to the big boys above and to my boss for the 2 free fridays every month.<BR>
+<font size=-600>... and to my lovely wive, who's watching my back the time of this writing.</font></p>
+
+
+<HR>
+<a target="_top" href="http://u.extreme-dm.com/?login=emblin">
+<img name=im src="http://u1.extreme-dm.com/i.gif" height=38
+border=0 width=41 alt=""></a><script language="javascript"><!--
+an=navigator.appName;d=document;function
+pr(){d.write("<img src=\"http://u0.extreme-dm.com",
+"/0.gif?tag=emblin&j=y&srw="+srw+"&srb="+srb+"&",
+"rs="+r+"&l="+escape(d.referrer)+"\" height=1 ",
+"width=1>");}srb="na";srw="na";//-->
+</script><script language="javascript1.2"><!--
+s=screen;srw=s.width;an!="Netscape"?
+srb=s.colorDepth:srb=s.pixelDepth;//-->
+</script><script language="javascript"><!--
+r=41;d.images?r=d.im.width:z=0;pr();//-->
+</script><noscript><img height=1 width=1 alt="" 
+src="http://u0.extreme-dm.com/0.gif?tag=emblin&j=n"></noscript>
+<HR>
+
+<div id="Animal" style="position: absolute;"><img name="AniIMG" src="img/ani0.gif" width=25 height=25></div>
+<div id="ani0" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani1" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani2" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani3" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani4" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani5" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani6" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani7" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<script language="JavaScript" src="anima.js"></script>
+<script><!-- 
+smooth(0);
+//--></script>
+
+
+</BODY>
+</HTML>

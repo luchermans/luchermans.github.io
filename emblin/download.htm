@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<TITLE>DownLoad EMBLIN</TITLE>
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+<SCRIPT LANGUAGE="JavaScript"><!--
+//--- global vars
+var seq=0;	//what are YOU doing ?
+var Nav=navigator.appName.indexOf("Explo");
+
+function pengu_say(txt, del)
+{   document.write('<table><tr><td><IMG src="img/linux.gif"></td>' +
+					'<td><h1>' + txt + '</h1></td></tr></table>');
+    setTimeout("window.close()", del);
+}
+//--- progress Bar ---
+function progBar_init( Hi, Wi, speed)
+{ 	document.write(
+	'<IMG name="lbar" src="img/lbar.gif" width=1 height='+Hi+' border=1>' +
+	'<IMG name="rbar" src="img/rbar.gif" width='+Wi+' height='+Hi+' border=1>');
+	progBar.width=Wi;
+	progBar.cnt=0;
+	progBar.speed=speed;
+}
+function progBar()
+{	document.f.lbar.width=progBar.cnt;
+	document.f.rbar.width=progBar.width-progBar.cnt;
+}
+function progBar_go()
+{ var i, txt="Hello";
+	if (Nav<0)
+	{	pengu_say("Sorry only for WinExplorer<BR><BR>Please use the ftp download below",4000);
+		return;
+	}
+	if (seq==0)
+	{	if (progBar.cnt>10)
+		{	alert(	"Error writing to Floppy\n" +
+				"Make sure the disk is not write-protected\n");
+			document.f.Status.alt="Insert floppy disk and press OK";
+			++seq;
+			progBar.cnt=0; progBar();
+			return;
+		}
+	}
+	else; if (seq==1)
+	{	document.f.yes.disabled="1";
+		document.f.cancel.disabled="1";
+	}
+	else; if (seq>1)
+	{	if (seq<5)
+			alert( "This program is not responding, it may be busy, "+
+				   "waiting for a \nresponse from you, or it may have stop running.\n\n\n"+
+				   "   - Click Cancel to ingore and return to Windows\n\n"+
+				   "   - To close this program immediately click Ok\n"+
+				   "     You will lose any unsaved information in this program");
+		else
+		{	alert("This program has performed an illegal operation and will be\nshut down.\n"+
+				  "If the problem persists, contact the program\nvendor.");
+			if (seq>10)
+			{	pengu_say("I think you better reboot from this floppy by hand<BR>Good luck",5000); 
+				//while (-1);	//--hang up
+				return;
+			}
+		}
+		setTimeout("progBar_go()", 200);
+		++seq;
+		return;			
+	}
+	if (progBar.cnt >= progBar.width)
+	{	progBar.cnt=progBar.width; progBar();
+		f.Status.alt="EMBLIN Image transferred to floppy";
+		if (confirm( "You now have a bootable EMBLIN floppy\n"+
+					 "Press OK to start EMBLIN"))
+			alert( "System will Reboot now !");
+		else
+		{	confirm("Start EMBLIN by booting from this floppy\n"+
+					"PS: it's not a DOS formated floppy\n"+
+					"      so you can't read it\n"+
+					"\n           Good luck !\n");
+			pengu_say("Thanks for your time and<BR><BR>Good luck",3000); return;
+		}
+		++seq;
+	}
+	document.f.Status.alt="Copying EMBLIN image to Floppy      Please wait...";
+	//-- code above is just for my app, only code below is progBar
+	progBar();
+	progBar.cnt=progBar.cnt+5;
+	setTimeout("progBar_go()", progBar.speed);
+}
+//--></SCRIPT>
+
+</HEAD>
+<BODY>
+
+<form name="f"><h3 align="center">
+	Please label a disk 'EmbLin'<BR>
+	and insert it into drive A:<BR><BR>
+	<IMG SRC="no.gif" name="Status" width=300 height=30 alt="Insert floppy disk and press OK" ><BR>
+	<SCRIPT><!--
+	progBar_init( 25, 300, 800);//--> </SCRIPT><BR>
+	
+	Warning: All data on floppy will be lost !<BR><BR>
+	<input type="button" name="yes" value="    Ok    " onClick="progBar_go()">
+	&nbsp &nbsp &nbsp
+	<INPUT type="button" name="cancel" value="Cancel" onClick="window.close()">
+</h3></form>
+</BODY>
+</HTML>

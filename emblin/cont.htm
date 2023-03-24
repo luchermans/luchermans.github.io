@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<TITLE>EmbLin Index</TITLE>
+<!----------------------------------------
+ (C) by Luc Hermans              DoBiT.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+<SCRIPT><!--
+var NavVer=parseInt(navigator.appVersion);
+
+myref.cnt=0;
+function myref( href, text, tg)
+{	++myref.cnt;
+	if (NavVer > 3)  document.write(
+		'<A HREF="' + href + '" TARGET="' + tg + '" ' +
+		"onMouseOver='document.r" + myref.cnt + ".src=" + '"./img/lbar.gif"' + "' " +
+		"onMouseOut='document.r" + myref.cnt + ".src=" + '"./img/rbar.gif"' +"'>" +
+		'<IMG name="r' + myref.cnt + '" SRC="./img/rbar.gif" width=10 height=10 border=0>' +
+		text + "</A><BR>" );
+	else
+		document.write('<A HREF=' + href + ' TARGET="body"> ' + text + "</A><BR>" );
+}
+//---preaload image
+var pl=new Image; pl.src="./img/linuxa.gif";
+//--></script>
+</HEAD>
+<BODY bgcolor="#f0e8e8" text="#004040">
+<A HREF="./body.htm#emblin" TARGET="body" onMouseOver='document.penguin.src="./img/linuxa.gif"' 
+    onMouseOut='document.penguin.src="./img/linux.gif"'>
+	<IMG name="penguin" SRC="./img/linux.gif" border=0 alt="Hello">
+</A>
+<table align="center" id="Tbl">
+<tr><td><h3> &nbsp <u>EmbLin</u> &nbsp </h3></td></tr>
+</table>
+<script><!--
+	myref("./body.htm#whats", 	"Who's EmbLin", "body");
+	myref("./body.htm#reqs",  	"Requirments", "body");
+	myref("./body.htm#limi",  	"Limitations", "body");
+	myref("./body.htm#stats", 	"Project Status", "body");
+	myref("./body.htm#downs", 	"Download", "body");
+	myref("./body.htm#todo",  	"ToDo", "body");
+	myref("./embhowto.htm#top", "Howto Embed", "body");
+	myref("./xvtouch.htm", 		"Xvesa Touch", "_top");
+	myref("./linuxqr.htm", 		"Linux Quick Ref", "body");
+	myref("./smultita.htm",		"sMultiTa", "_top");
+	myref("./dlr.htm",			"Rabbit Dlr", "_top");
+	myref("./img/ani.htm",		"Java Fun", "_top");
+	myref("./body.htm#refs", 	"References", "body");
+//--></script>
+<NOSCRIPT>
+	<a href="./body.htm#whats">	Who's EmbLin</a><BR>
+	<a href="./body.htm#reqs">	Requirments</a><BR>
+	<a href="./body.htm#limi">	Limitations</a><BR>
+	<a href="./body.htm#stats">	Project Status</a><BR>
+	<a href="./body.htm#downs">	Download</a><BR>
+	<a href="./body.htm#todo">	ToDo</a><BR>
+	<a href="./embhowto.htm#top">Howto Embed</a><BR>
+	<a href="./xvtouch.htm">Xvesa Touch</a><BR>
+	<a href="./linuxqr.htm">	Linux Quick Ref</a><BR>
+	<a href="./smultita.htm">   sMultiTa</a><BR>
+	<a href="./dlr.htm">        Rabbit Dlr</a><BR>
+	<a href="./img/ani.htm">	Java Fun</a><BR>
+	<a href="./body.htm#refs">	References</a><BR>
+</NOSCRIPT>
+</BODY>
+</HTML>

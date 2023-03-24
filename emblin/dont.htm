@@ -1,0 +1,22 @@
+<HTML><HEAD><TITLE>Pengu Says</TITLE>
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+<SCRIPT><!--
+setTimeout('win_dont()',300);
+setTimeout('window.close()', 5000);
+function win_dont()
+{ var a,rnd,t,l, dt=new Date();
+	rnd=parseInt(dt.getTime()%200+200);
+	t=parseInt(dt.getTime()%550+10);
+	l=parseInt(dt.getTime()%700+10);
+	a= rnd + ",height=170,top=" + t + ",left=" + l;
+	window.open("./dont.htm","_blank","status=no,width=" + a);
+	//, + t + ",left=" + l);
+}
+//--></SCRIPT></HEAD>
+<BODY bgcolor="#e8e0e0" text="#004040">
+<table><tr><td><IMG src='img/linux.gif'></td> 
+<td><h1>I warned you</h1></td></tr></table>
+</BODY></HTML>

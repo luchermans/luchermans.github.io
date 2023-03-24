@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<TITLE>xvtouch</TITLE>
+<META NAME="keywords" CONTENT="xvtouch, Xvesa, Xorg, usb, hid, event, udev, touchscreen, driver, source, GNU, GPL">
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+</HEAD>
+<BODY bgcolor="#f8f0f0">
+<table border='0' cellpadding='0' cellspacing='0'><tr><td bgcolor="#f0e8e8" width="100" valign="top">
+<A HREF="smultita.htm" TARGET="_top" onMouseOver='document.smulti.src="img/smultia.gif"'  onMouseOut='document.smulti.src="img/smulti.gif"'>
+	<IMG name="smulti" SRC="img/smulti.gif" border=0 alt="sMulTi"></a>
+<br>
+&nbsp <a href="default.htm" onMouseOver='document.r0.src="./img/lbar.gif"' onMouseOut='document.r0.src="./img/rbar.gif"'>
+		<img name="r0" SRC="img/rbar.gif" width=10 height=10 border=0>EmbLin </a><br>
+&nbsp 	<img name="r4" SRC="img/rbar.gif" width=10 height=10 border=0><b>xvTouch </b><br>
+&nbsp <a href="smultita.htm" onMouseOver='document.r1.src="./img/lbar.gif"' onMouseOut='document.r1.src="./img/rbar.gif"'>
+		<img name="r1" SRC="img/rbar.gif" width=10 height=10 border=0>sMultiTA</a><br>
+&nbsp <a href="dlr.htm" onMouseOver='document.r2.src="./img/lbar.gif"' onMouseOut='document.r2.src="./img/rbar.gif"'>
+		<img name="r2" SRC="img/rbar.gif" width=10 height=10 border=0>Rabbit Dlr </a><br>
+&nbsp <a href="img/ani.htm" onMouseOver='document.r3.src="./img/lbar.gif"' onMouseOut='document.r3.src="./img/rbar.gif"'>
+		<img name="r3" SRC="img/rbar.gif" width=10 height=10 border=0>Java Fun </a><br>
+</td><td>
+
+<A NAME="top"></A>
+<table width="450" border="3" align="center" bgcolor="#004040"><tr>
+<th><font color="#fff8f0"><font size=+4>&nbsp xvTouch &nbsp &nbsp </font><font size=-1>by Luc Hermans <BR>
+<CODE>smultita at gmail.com</CODE></font></font></th></tr></table>
+
+<h2><font color="#004040">xvtouch Xvesa usb Touchscreen Linux driver</font></h2>
+</dt>
+<table><tr><td>
+<h3><font color="#004040"><code>by </code> Luc Hermans, &nbsp
+<code><a href="mailto:lh at dobit.com"> lh at dobit.com</a></code></font></h3>
+</td><td><h1>&nbsp &nbsp &nbsp </h1></td><td><a href="http://www.dobit.com">
+<IMG src="./img/dobit.png" alt="where I work" border=0></a>
+</td></tr></table>
+<code>Last update 15 May 2011</code><HR><EM>
+xvtouch Xvesa Xorg usb hid event udev Linux touchscreen driver 
+</EM><HR></P>
+<p>
+<dt><b>Introduction:</b></dt>
+<dd>Simple Touchdriver Translates /dev/input/eventX into XtestFakeMotionEvent() <br>
+Suppose to work for all USB-HID absolute pointing devices <br>
+on Linux kernels supporting udev events</dd>
+
+<dt><b>Calibration:</b></dt>
+<dd>In xterm type:<br>
+			&nbsp xvtouch /dev/input/eventX -c</dd>
+<dt><b>Config:</b></dt>
+<dd>Add to /home/tc/.xsession after waitforX<br>
+			&nbsp killall xvtouch<br>
+			&nbsp xvtouch /dev/input/event3 &<br>
+	    Add to /opt/.filetool.lst<br>
+			&nbsp /usr/local/etc/xvtouch.cal<br></dd>
+<dt><b>Requires:</b></dt><dd>Xorg-7.5-lib.tcz (Xlibs support libraries)</dd>
+<dt><b>Copying-policy:</b></dt><dd>GNU GPL</dd>
+<dt><b>Download:</b></dt><dd>Binary and source <a href="./pub/xvtouch.tgz">xvtouch.tgz</a></dd>
+<dt><b>Development environment:</b></dt>
+<dd><a href="http://tinycorelinux.com">Tinycore Linux</a> 3.5<br>
+ install TC Apps: complitc, Xorg-7.5-lib, Xorg-7.5.dev [nano] <br>
+ gcc -o xvtouch xvtouch.c -lX11 -lXtst -Wall</dd>
+<br><br>
+<HR>
+</BODY>
+</HTML>

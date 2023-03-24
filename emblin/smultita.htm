@@ -1,0 +1,283 @@
+<HTML>
+<HEAD>
+<TITLE>sMultiTa</TITLE>
+<META NAME="keywords" CONTENT="smultita, multi tasking, multi-tasking, mini, tiny, small, source, GNU, GPL">
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+</HEAD>
+<BODY bgcolor="#f8f0f0">
+<table border='0' cellpadding='0' cellspacing='0'><tr><td bgcolor="#f0e8e8" width="100" valign="top">
+<A HREF="smultita.htm" TARGET="_top" onMouseOver='document.smulti.src="img/smultia.gif"'  onMouseOut='document.smulti.src="img/smulti.gif"'>
+	<IMG name="smulti" SRC="img/smulti.gif" border=0 alt="sMulTi"></a>
+<br>
+&nbsp <a href="default.htm" onMouseOver='document.r0.src="./img/lbar.gif"' onMouseOut='document.r0.src="./img/rbar.gif"'>
+		<img name="r0" SRC="img/rbar.gif" width=10 height=10 border=0>EmbLin </a><br>
+&nbsp <a href="xvtouch.htm" onMouseOver='document.r4.src="./img/lbar.gif"' onMouseOut='document.r4.src="./img/rbar.gif"'>
+		<img name="r4" SRC="img/rbar.gif" width=10 height=10 border=0>xvTouch</a><br>		
+&nbsp 	<img name="r1" SRC="img/rbar.gif" width=10 height=10 border=0><b>sMultiTA </b><br>
+&nbsp <a href="dlr.htm" onMouseOver='document.r2.src="./img/lbar.gif"' onMouseOut='document.r2.src="./img/rbar.gif"'>
+		<img name="r2" SRC="img/rbar.gif" width=10 height=10 border=0>Rabbit Dlr </a><br>
+&nbsp <a href="img/ani.htm" onMouseOver='document.r3.src="./img/lbar.gif"' onMouseOut='document.r3.src="./img/rbar.gif"'>
+		<img name="r3" SRC="img/rbar.gif" width=10 height=10 border=0>Java Fun </a><br>
+</td><td>
+
+<A NAME="top"></A>
+<table width="450" border="3" align="center" bgcolor="#004040"><tr>
+<th><font color="#fff8f0"><font size=+4>&nbsp sMultiTA &nbsp &nbsp </font><font size=-1>by Luc Hermans <BR>
+<CODE>smultita at gmail.com</CODE></font></font></th></tr></table>
+
+<table align="center"><tr><td><br>Advertisement: &nbsp &nbsp<b>
+<a href='http://www.dobit.com/dobit/Site/Fr_Outside.asp?QS=Page%3DWhatsTouchStep2%26CID%3D10%26Cat%3DDVD%2Binterface'>Touch your DVD</b></a></td></tr></table>
+
+<h2><font color="#004040">Worlds smallest full functioning Multi Tasking system</font></h2>
+</dt>
+<table><tr><td>
+<h3><font color="#004040"><code>by </code> Luc Hermans, &nbsp
+<code><a href="mailto:smultita at gmail.com"> smultita at gmail.com</a></code></font></h3>
+</td><td><h1>&nbsp &nbsp &nbsp </h1></td><td><a href="http://www.dobit.com" target="_blank">
+<IMG src="./img/dobitani.gif" alt="where I work" border=0></a>
+</td></tr></table>
+<code>Last update 15 Nov 2002</code><HR><EM>
+This document describes the worlds smallest, but full functioning, software extension for MultiTasking: sMultiTa 
+</EM><HR></P>
+<P>
+<H2><A NAME="toc1"></A><U>Content</U></H2>
+<UL>
+<LI><A HREF="#ss1">1. Introduction</A>
+<LI><A HREF="#ss2">2. Advantages</A>
+<LI><A HREF="#ss3">3. Task Switching Technique</A>
+<LI><A HREF="#ss4">4. Timers and Watchdogs</A>
+<LI><A HREF="#ss5">5. Task Priority</A>
+<LI><A HREF="#ss6">6. Multi Tasking Function List</A>
+<LI><A HREF="#ss7">7. Programming Tips</A>
+<LI><A HREF="#ss8">8. Download</A>
+<LI><A HREF="#ss9">9. License</A>
+</UL>
+
+<H2><A NAME="ss1">1. Introduction</A></H2>
+<P>
+In the early days we build embedded systems based on a Z80 compatible processor. 
+Because the software got more and more complex I wrote a simple multi tasking enhancement in C.<BR>
+Later on the Z80 board was replaced by an embedded ix86 and I ported this stuff to DOS.<BR>
+These days DOS is replaced by Linux and the multi tasking soft is also ported to Linux.
+(which may seem ridicule, because Linux has a perfect multiprocessing system, but this was the 
+easiest way to get my application running on <A HREF="http://www.dobit.com/emblin/default.htm" target="_parent">Linux</A> )
+<P>
+The Z80 compiler did have an option (for debugging purpose) which inserts a RST instruction between
+every C source line. This RST instruction pointed to the task switcher <b>cs()</b>, and did switch to
+another task every 32 calls. In the DOS and Linux version I didn't find such options, so here
+the <b>cs()</b> call is put in every loop statement.
+<P>
+I did not choose for a timer interrupt switcher, like most others do, because then a switch 
+can occur everywhere in the program. Also in the middle of a C statement where a variable is written.
+Then this variable contains partial old, partial new data. It may not be used/read by another task.
+So this requires, mostly complex inter tasking communication/synchronization.
+<P>
+This task switcher does not use, nor disable any interrupts.
+They are free for your hard realtime application. 
+Task switching is done by software which makes inter tasking communication very easy.
+Even non reentrant system calls and global functions can be shared between tasks.
+
+<H2><A NAME="ss2">2. Advantages</A></H2>
+<ul><li>Very very small; about 200 lines of source code.
+	<li>Includes many multi tasking features; see <a href="#ss6">Function list</a>.
+	<li>Multi platform; should be easy to reconfigure to others systems<BR>
+	Only <code>csdef.h</code> to change and following requirements:
+	<ul type="circle">
+		<li>A C-compiler which uses a stack to store return addresses (are these not all ?).
+	    <li>An instruction or two to read/write the stack pointer.
+	    <li>Some knowledge of stack frames.
+	</ul>
+	<li>No use of interrupts; no interrupt blocking, interrupts free for your hard realtime things.
+	<li>Includes Timers, Hardware and Software watchdog.
+	<li>Easy inter tasking communications; all global variables are common.
+	<li>Full control of task switching gives you efficient task managing functions.
+</ul>
+
+<H2><A NAME="ss3">3. Task switching technique</A></H2>
+<P>
+Every task has it's own stack area defined in a task structure something like:
+<ul>
+<li>Task stack pointer: pointing to tasks stack area
+<li>Task status, which can be:
+	<ul><li>ACTIVE: task currently running
+		<li>SUSPEND: task in background, ready to run
+		<li>WAIT: task delayed for some time
+		<li>HALT: temporary stopped
+		<li>CANCEL: not running at all
+	</ul>
+<li>Task delay counter
+<li>Task priority
+<li> ...
+</ul>
+Let's go switching now... 
+Suppose task1 and task2 are already running and each have a proper stack frame stack1 resp stack2.<BR>
+When task1 calls the switcher <b>cs()</b>, the return address of task1 is pushed on stack1.
+The task switcher additionally pushes all necessary registers on stack1, 
+saves task1 stack pointer, sets task1 to SUSPEND, finds another task to run, 
+which is task2 here, and sets task2 to ACTIVE.<BR>
+Then the switcher loads task2's stack pointer and pops all registers from stack2.
+Next a return instruction will pop the return address of task2 into the program counter
+and task2 continues running where it has left off, until task2 calls the switcher ...<BR>
+That's all for switching.
+<P>
+It's a bit more complicated to get a task running, 
+or how to get a proper stack frame for this new task ?<BR>
+This is done by the <b>cs_run()</b> function. Let's say task1 calls cs_run() to start task2.
+Then cs_run() pushes the same registers as <b>cs()</b> on stack1, saves task1's stack pointer
+and set it to SUSPEND.<BR>
+This way task1 has a stack frame <b>exactly</b> the same as cs() should have done.
+Next task2's stack pointer is set to a new stack area (stack2) and set ACTIVE.<BR> 
+Instead of popping everything from the stack, cs_run() just calls the task2's start address.
+When task2 now calls cs(), cs() itself will build a proper stack frame for it and switch
+to the next task, which is task1.
+<P>
+The initialization of the task switcher is <b>cs_init()</b>. This function just sets all tasks
+suspended except the main task (task0) is set active. This main task calls cs_run() to start
+task1, task2 ... to start the new tasks. Except from this, all tasks have the same rights, there
+is no leading or controlling task.
+<P>
+This code is written for 99.97% in C (only 3 assembly instructions used). This is important
+because that's why this task switcher is not depending on the stack frame used by the compiler,
+processor or memory model, and can be used (with 00.03% modification) on many platforms.
+<P>
+
+<H2><A NAME="ss4">4. Timers and Watchdogs</A></H2>
+<P>
+This software supports timers and watchdogs.<BR>
+If a watchdog is set for a task, the task must call <b>wd_set()</b> before the watchdog timer 
+has elapsed. Otherwise the external function <b>cs_reboot()</b> is called.<BR>
+A hardware watchdog is also implemented. The switcher cs() will call the external <b>cs_wdog()</b> 
+function regularly to re-trigger the hardware watchdog.
+
+<H2><A NAME="ss5">5. Task Priority</A></H2>
+<P>
+A simple task priority system is implemented.
+
+<H2><A NAME="ss6">6. Multi Tasking Function List</A></H2>
+<DT><DD></code><table>
+<tr><td>Initialize task switcher</td><td>void cs_init( )</td></tr>
+<tr><td>Start a new task</td><td>void cs_run( task_nr, &amp;task_function(void), ...)</td></tr>
+<tr><td>Put a task in wait</td><td>void cs_wait( nr_of_ticks )</td></tr>
+<tr><td>Change tasks priority</td><td>void cs_priority( priority )</td></tr>
+<tr><td>Cancel a task permanent &nbsp &nbsp </td><td>void cs_cancel( task_nr )</td></tr>
+<tr><td>Halt a task temporary</td><td>void cs_halt( )</td></tr>
+<tr><td>Continue a halted task</td><td>void cs_cont( )</td></tr>
+<tr><td>Read a task status</td><td>int cs_status( task_nr )</td></tr>
+<tr><td>Force a task switch</td><td>cs_switch( )</td></tr>
+<tr><td>Disable task switching</td><td>cs_disable( )</td></tr>
+<tr><td>Enable task switching</td><td>cs_enable( )</td></tr>
+<tr><td>Enable watchdog</td><td>void wd_run( )</td></tr>
+<tr><td>Re-trigger watchdog</td><td>void wd_set( nr_of_ticks )</td></tr>
+<tr><td>Disable watchdog</td><td>void wd_stop( )</td></tr>
+<tr><td>Start a timer</td><td>void tm_set( &amp;timer )</td></tr>
+<tr><td>Check timer elapsed</td><td>int tm_chk( &amp;timer, delay )</td></tr>
+</table></code></dd></DT>
+
+<H2><A NAME="ss7">7. Programming Tips</A></H2>
+<ul>
+<li>A task is defined like any other functions <b>void task( void )</b>. It should never 
+return from this function if you don't like crashes. Only the main task can return (to the OS).
+<li>Put a <b>cs()</b> instruction into every loop statement. (do, while, for ..)
+<li>Use a <b>cs_wait()</b> function if your task is waiting for user or device input (or output).
+<li>Protect your variables not shared with other tasks, by declaring them in the function (auto)
+or by using the keyword static.
+<li>Put every task in a different source file and link them together. Also your global variables
+(for inter tasking communication) and functions are best put in a separate source and header file.
+<li>If you call a library function, shared by more tasks, don't put a cs() call into this function
+unless these functions are reentrant.
+<li>Do not use blocking system calls, otherwise switching will block. Use non blocking system
+calls in a <b>cs_wait()</b> loop.
+</ul>
+
+<H2><A NAME="ss8">8. Download Demo</A></H2>
+<p><a href="./pub/csdemoR003.zip">CSdemoR003.ZIP</a> (Ver 0.03) is a port for <b>Rabbit</b> tested with Dynamic C Version 7.21SE<br>
+Optional preemptive multitasking is included (timerB interrupt switch). (Rabbit users: see also <a href="http://www.dobit.com/emblin/dlr.htm">Download & Run</a>)
+<P>Just click on <a href="./pub/csdemo.zip">csdemo.zip</a> to download. This zip file is only 28 Kb but contains:
+<ul>
+<li>a stupid but full functioning demonstration
+<li>csdemo.exe executable for DOS users
+<li>csdemo binary for LINUX users
+<li>source files: cs.cpp, cs.h csdef.h and csdemo.cpp
+<li>GNU GPL Licence
+<li>this html page
+</ul>
+Demo screen dump:
+<pre>
+------- s M u l t i T a -----------
+ software multitasking simple demo 
+----------------------------------
+Task0 start  STACK=0000FFCC
+Task1 start  1
+Task2 start  20120120120120120120120120120120120120120120120
+Task0 wait   1212121212121212
+Task2 wait   11111111
+Task1 halt   
+Task2 wakeup 2
+Task0 wakeup 02020202020202020202020202020202020202020202020
+Task1 cont   120120120120120120120120120120120120120120120
+Task3 start  30123012301230123012301230123012
+Task3 prioty 3012301201230120123012012301201230120123012012
+Task3 cancel 0120120120120120120
+TimerElapsed 120120120120120120120120120120120120120120120120
+Task0 all done
+-------------------------------
+</pre>
+<H2><A NAME="ss9">9. License</A></H2>
+<DT>
+<DD>Copyright (C) 2002 <b>Luc Hermans</b> working at <A href="http://www.dobit.com" target="_blank">DoBiT nv</A> <BR><BR>
+<DD>This library is free software; you can redistribute it and/or
+<DD>modify it under the terms of the <b>GNU Lesser General Public</b>
+<DD>License as published by the Free Software Foundation; either
+<DD>version 2.1 of the License, or (at your option) any later version.<BR><BR>
+<DD>This library is distributed in the hope that it will be useful,
+<DD>but WITHOUT ANY WARRANTY; without even the implied warranty of
+<DD>MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+<DD><a href="http://www.fsf.org/copyleft/lesser.html" target="_blank">GNU Lesser General Public License</a> for more details.<BR><BR>
+
+<DD>If you make changes to this, or build an OS or a VJM based on this
+<DD>please let me know <a href="mailto:smultita at gmail.com">smultita at gmail.com</a>
+</dd></DT>
+<P>
+</td></tr></table>
+<HR>
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+<div id="Animal" style="position: absolute;"><img name="AniIMG" src="img/ani0.gif" width=25 height=25></div>
+<div id="ani0" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani1" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani2" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani3" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani4" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani5" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani6" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani7" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<script language="JavaScript" src="anima.js"></script>
+<script language="JavaScript"><!--
+ function ani_hit() {;} //--></script>
+
+<a target="_top" href="http://t.extreme-dm.com/?login=smultita">
+<img name=im src="http://t1.extreme-dm.com/i.gif" height=38
+border=0 width=41 alt=""></a><script language="javascript"><!--
+an=navigator.appName;d=document;function
+pr(){d.write("<img src=\"http://t0.extreme-dm.com",
+"/0.gif?tag=smultita&j=y&srw="+srw+"&srb="+srb+"&",
+"rs="+r+"&l="+escape(d.referrer)+"\" height=1 ",
+"width=1>");}srb="na";srw="na";//-->
+</script><script language="javascript1.2"><!--
+s=screen;srw=s.width;an!="Netscape"?
+srb=s.colorDepth:srb=s.pixelDepth;//-->
+</script><script language="javascript"><!--
+r=41;d.images?r=d.im.width:z=0;pr();//-->
+</script><noscript><img height=1 width=1 alt="" 
+src="http://t0.extreme-dm.com/0.gif?tag=smultita&j=n"></noscript>
+<HR>
+<A HREF="#toc1"><IMG SRC="prev.gif" ALT="Previous"></A>
+<A href="http://www.dobit.com/emblin/default.htm" target="_parent"><IMG SRC="next.gif" ALT="Next"></A>
+<A HREF="#toc1"><IMG SRC="toc.gif" ALT="Contents"></A>
+</BODY>
+</HTML>

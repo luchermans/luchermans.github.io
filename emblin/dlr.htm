@@ -1,0 +1,238 @@
+<HTML>
+<HEAD>
+<TITLE>Download & Run</TITLE>
+<META NAME="keywords" CONTENT="tftp, rabbit, smultita, bootp, download, flash program, source">
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+</HEAD>
+<BODY bgcolor="#f8f0f0">
+<table border='0' cellpadding='0' cellspacing='0'><tr><td bgcolor="#f0e8e8" width="100" valign="top">
+<A HREF="http://www.dobit.com/emblin/dlr.htm" TARGET="_top" onMouseOver='document.smulti.src="img/smultia.gif"'  onMouseOut='document.smulti.src="img/smulti.gif"'>
+	<IMG name="smulti" SRC="img/smulti.gif" border=0 alt="sMulTi"></a>
+<br>
+&nbsp <a href="default.htm" onMouseOver='document.r0.src="./img/lbar.gif"' onMouseOut='document.r0.src="./img/rbar.gif"'>
+		<img name="r0" SRC="img/rbar.gif" width=10 height=10 border=0>EmbLin </a><br>
+&nbsp <a href="xvtouch.htm" onMouseOver='document.r4.src="./img/lbar.gif"' onMouseOut='document.r4.src="./img/rbar.gif"'>
+		<img name="r4" SRC="img/rbar.gif" width=10 height=10 border=0>xvTouch</a><br>		
+&nbsp <a href="smultita.htm" onMouseOver='document.r1.src="./img/lbar.gif"' onMouseOut='document.r1.src="./img/rbar.gif"'>
+		<img name="r1" SRC="img/rbar.gif" width=10 height=10 border=0>sMultiTA</a><br>
+&nbsp 	<img name="r2" SRC="img/rbar.gif" width=10 height=10 border=0><b>Rabbit Dlr</b><br>
+&nbsp <a href="img/ani.htm" onMouseOver='document.r3.src="./img/lbar.gif"' onMouseOut='document.r3.src="./img/rbar.gif"'>
+		<img name="r3" SRC="img/rbar.gif" width=10 height=10 border=0>Java Fun </a><br>
+</td><td>
+
+<A NAME="top"></A>
+<table width="450" border="3" align="center" bgcolor="#004040"><tr>
+<th><font color="#fff8f0"><font size=+3>&nbsp DownLoad & Run &nbsp &nbsp </font><font size=-1>by Luc Hermans <BR>
+<CODE>smultita at gmail.com</CODE></font></font></th></tr></table>
+
+<br><br>
+<br><Br>
+<h2><font color="#004040">Bootp, TFTP & Flash upgrade on a Rabbit <img src='img/rcm37_90.gif' align='top'></font></h2>
+</dt>
+<table><tr><td>
+<b><font color="#004040"><code>by </code> Luc Hermans, &nbsp
+<code><a href="mailto:smultita at gmail.com"> smultita at gmail.com</a></code></font></b>
+</td><td><h1>&nbsp &nbsp &nbsp </h1></td><td><a href="http://www.dobit.com" target="_blank">
+<IMG src="./img/dobitani.gif" alt="where I work" border=0></a>
+</td></tr></table>
+<code>Last update 15 Apr 2004</code><HR><EM>
+This document describes howto Download a program via DHCP/BOOTP/TFPT and run this program on a Rabbit RCM2200/3700<br>
+Optional the downloaded program can be written to Flash (your firmware upgrade)
+</EM><HR></P>
+<P>
+<H2><A NAME="toc1"></A><U>Content</U></H2>
+<UL>
+<LI><A HREF="#ss1">1. Introduction</A>
+<LI><A HREF="#ss2">2. Howto BootP & Run</A>
+<LI><A HREF="#ss3">3. Howto BootP & Program Flash</A>
+<LI><A HREF="#ss4">4. Howto Make DlrBootp & DlrFlash</A>
+<LI><A HREF="#ss5">5. How does this work ?</A>
+<LI><A HREF="#ss6">6. Inplementation Ideas</A>
+<LI><A HREF="#ss7">7. Source Code Download</A>
+</UL>
+
+<H2><A NAME="ss1">1. Introduction</A></H2>
+<dd>This is what I needed to easy updgrade my firmware in the field. Maybe it's usefull <b>4U2</b>.<br>
+The software is tested on a Rabbit RCM2200, RCM2250 and RCM3700 with Dynamic_C_7.21SE, DC_8.30 and DC_8_51.<br>
+It's different from DLM that it does NOT need any (A18) hardware modification.
+However it is less robust. (crashes during flash write)<br>
+<b>DLR can also download your program to RAM an RUN it</b>.<br>
+<br>
+<dd>In My first Rabbit project I needed flash upgrade but did not know how to. DLM was not an option (because of the hardware modification). By testing TFTP, examining <a href='http://www.zworld.com/documentation/docs/refs/TN202/TN202.htm' target='_blank'>Rabbit Memory Management</a> I figured out how to download and run a program in RAM. If I could do this I was able to run any program, including a firmware upgrade utility. Because of the time pressure of the project, I delayed the development of this utitly, but implemented DLR for ram only. In the time that the customer was testing the our device, I modified DLR to write to flash. After I solved some
+customer reported bugs, I send him a mail with the upgrade utitlity (Pumpkin TFPT + download.bin + program.bin) attached in a ZIP file (214 KB) and our customer upgraded the firmware (a couple of times) until the final release.
+</dd>
+<br><br>
+<b>WARNING:</b><br>
+<font size='-1'>This PROGRAM is provided AS A SAMPLE ONLY in the hope that it will be useful, but WITHOUT ANY WARRANTY;<br>
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.<br>
+It could overwrite your SysIDBlock (only if you download programs > 220KB)</font>
+
+</dd>
+<H2><A NAME="ss2">2. Howto BootP & Run</A></H2>
+<UL>
+<LI><b>Build your application program</b><br>
+Set the compiler option <b>Code and Bios to RAM</b>, and <b>compile</b> your popular program <b>to bin</b> file. 
+(in DC 8.xx under Project_Options, Compiler: set 'Code and BIOS in RAM' and '<b>Compile defined target config to .bin file</b>'  then press F5 to compile)<br>
+Rename this file to <b>download.bin</b>. Download.bin can be upto +/- 100KB in a 128KB RAM system<br>
+<LI><b>Program your Rabbit</b><br>
+Use the RFU utility to program your flash with <a href="pub/dlrbin.zip"><b>DlrBootp.bin</b></a>
+<LI><b>Setup TFTP server</b><br>
+Use your favorite TFTP server or download 
+<a href="http://tftpd32.jounin.net/" target="_blank"> TFPTD32 </a> =(<b>TFTP + BOOTP + DHCP</b>) or
+<a href="http://kin.klever.net/pumpkin/" target="_blank">PumpKin TFTP</a><br>
+Copy the file <b>download.bin</b> to the TFTP root directory and give (all users) read access to this file.
+<LI><b>Setup DHCP/BOOTP server</b><br>
+If you have a DHCP/Bootp server set the <b>Boot Server Host Name</b> to the IP address of the system where the TFTP server is installed.
+Set the <b>BootFile Name</b> to <b>/download.bin</b>.<br>
+<LI><b>No BOOTP server ?</b><br>
+DLR also works with DHCP/TFTP. Then TFTP server must be the same as the DHCP server and
+the boot file name is fixed download.bin.<br> Download the worlds smallest DHCP server from 
+<a href="http://ruttkamp.gmxhome.de/dhcpsrv/dhcpini.htm" target="_blank">Uwe A. Ruttkamp DHCP</a> 
+and configure the dhcpsrv.ini file with the [MAC address] of your Rabbit.
+<LI><b>Run your download.bin</b><br>
+Reset your Rabbit processor
+</UL>
+<dd><table border='1'>
+<tr><td><b> RABBIT</b></td><td> &nbsp </td><td><b>DHCP/TFTP server</b></td></tr>
+<tr><td> &nbsp </td><td> ---&gt DHCP req</td><td> &nbsp</td></tr>
+<tr><td> &nbsp </td><td> &lt--- YourIP, myIP, [yourBootFile, tftpIP]</td><td> DHCP server</td></tr>
+<tr><td> &nbsp </td><td> ---&gt TFPT get DOWNLOAD.BIN</td><td> &nbsp</td></tr>
+<tr><td> save in RAM </td><td> &lt--- DOWNLOAD.BIN</td><td> TFTP server</td></tr>
+<tr><td> run DOWNLOAD.BIN<br>from RAM </td><td> &nbsp </td><td> <a href="#next">next</a></td></tr>
+</table></dd>
+
+<H2><A NAME="ss3">3. Howto BootP & Program Flash</A></H2>
+<UL>
+<li><b>Build your application program</b><br>
+Set the compiler option <b>Code and Bios to FLASH</b>, and <b>compile</b> your popular program <b>to bin</b> file.
+Rename this file to <b>program.bin</b>. Program.bin can be upto +/- 220KB. (to big files will overwrite SysIDBlock).
+<LI><b>Setup TFTP server</b><br>
+Copy the file <b>program.bin</b> to the TFTP root directory.
+Rename the file <a href="pub/dlrbin.zip"><b>DlrFlash.bin</b></a> to <b>download.bin</b> and put it in the TFTP root dir.
+<LI><b>Flash Write and Run your program.bin</b><br>
+Reset your Rabbit processor
+</UL>
+
+<A NAME="next">
+<dd><table border='1'>
+<tr><td><b> RABBIT</b></td><td> &nbsp </td><td><b>DHCP/TFTP server</b></td></tr>
+<tr><td> DOWNLOAD is now<br>running from RAM </td><td> &nbsp </td><td> &nbsp</td></tr>
+<tr><td> &nbsp </td><td> ---&gt DHCP req</td><td> &nbsp</td></tr>
+<tr><td> &nbsp </td><td> &lt--- YourIP, myIP</td><td> DHCP server</td></tr>
+<tr><td> &nbsp </td><td> ---&gt TFPT get PROGRAM.BIN</td><td> &nbsp</td></tr>
+<tr><td> save in FLASH </td><td> &lt--- PROGRAM.BIN</td><td> TFTP server</td></tr>
+<tr><td> run PROGRAM.BIN<br>from FLASH </td><td> &nbsp </td><td> &nbsp</td></tr>
+</table></dd>
+
+<H2><A NAME="ss4">4. Howto Make DlrBootp & DlrFlash</A></H2>
+<ul>
+<li>To make DlrBootp just compile DLR.C to Flash ...
+<li>To make DlrFlash just compile DLR.C to Ram ...
+</ul>
+
+<H2><A NAME="ss5">5. How does this work ?</A></H2>
+<ol>
+<li>In the MAIN_APP implement a downloader (DlrBootP) 
+<li>The MAIN_APP can download another PROGRAM to the beginning of RAM (this program was compiled to RAM)
+<li>And run this program in RAM (map RAM to bank0 and jp 0x0000)
+<li>Because this is my firmware upgrade utitly (DlrFlash) the program downloads my new MAIN_APP and upgrades the FLASH
+<li>Map FLASH to bank0 an runs the upgraded MAIN_APP
+</ol>
+
+<H2><A NAME="ss6">6. Implementation Ideas</A></H2>
+<UL>
+<LI><b>Static IP address (no DHCP, only TFTP)</b><br>
+This is how I use this stuff. The IP address of the rabbit can be configured and is saved in the UserBlock
+or can be patched in the bin files using a hex editor.
+<pre>
+	//-- use <b>DLR.C</b> as a lib (<b>uses only 180 bytes</b>, excluding TFTP about 2KB)
+	#define DLR_LIB
+	#use "DLR.C"
+	//... main stuff of my project
+	//-- Upgrade Firmware, initiated by a user action ...
+		dlr_tftp( srv_ip_addr, FILE_2_DOWNLOAD, gWdog);
+</pre>
+<LI><b>Use TCP or a Serial connection</b><br>
+Write your own firmware upgrade utility (use DLR.C as example). Test it with Dynamic C IDE (compiling to RAM) 
+and, if it works fine, make your own DOWNLOAD.BIN file. Then add the following code to your project.
+<pre>
+	#ximport DOWNLOAD.BIN download_bin
+	#define DLR_LIB	
+	#use "DLR.C"
+	//... main stuff of my project
+	//-- Upgrade Firmware, initiated by some event, command received, ...
+		root2xmem( 0x80000UL, download_bin, size)  //-- or xmem2xmem
+		dlr_run();	//-- <b>only 20 bytes</b>
+</pre>
+<LI><b>Run different programs from one flash</b><br>
+Use the #ximport to include different programs in your flash.<br>Depending on some conditions select the program to run.<br><br> 
+<LI><b>Put a TFTP SERVER in the Rabbit</b><br>
+	And put this in your network along with his friends, who will download and run the program located in this tini server.<br><br>
+<LI><b>Insert RUN command in ZCONSOLE.C</b><br>
+</ul>
+
+<H2><A NAME="ss7">7. Source Code Download</A></H2>
+<dd>The source <b>DLR.C</b> (V1.02) can be downloaded <a href="pub/dlrsrc102.zip"> here</a>.
+<dd>It is only 200 lines of code but has cost me lots of struggling the DC sources and compiler.
+<dd>If you have some improvements, bugfixes, tips, ...  let me know.
+<dd>If you find this usefull can drop me an <a href='mailto:luc at  dobit.com?subject=DLR source please'>Email</a> and attach <a href='img/10euro.jpg'>10 Euro</a>, 10 Dollar or an SD Flash_card.<br>
+<br>
+<b>Thanks,</b><br>
+<b>Luc</b>
+</dd>
+<br><br><br>
+<font size="+1">Related Links</font>
+<ul><li><a href='http://shdesigns.org/rabbit/'>shdesign: Ethernet Download Manager</a>
+    <li><a href='http://www.x-graph.be/'>X-Graph: Ethernet Firmware Upgrader</a>
+	<li><a href='http://rabbitlib.sourceforge.net/'>Rabbit Code Library</a>
+    <li><a href='http://www.rabbitsemiconductor.com/'>Rabbit Semiconductor</a>
+    <li><a href='http://www.rabbitsemiconductor.com/documentation/docs/refs/TN224/TN224.htm'>TN224 TCP-DownLoad Manager</a>
+	<li><a href='http://www.zworld.com/documentation/docs/refs/TN202/TN202.htm'>TN202 Rabbit Memory Management</a>
+	<li><a href='smultita.htm'>Small Multi Tasking System (ported to Rabbit)</a>
+	<li><a href='http://www.zworld.com/support/bb/'>Z-World BulletinBoard</a>
+	<li><a href='http://groups.yahoo.com/group/rabbit-semi/'>Yahoo Discussion Group</a>
+</ul>
+
+</td></tr></table>
+<HR>
+<a target="_top" href="http://t.extreme-dm.com/?login=smultita">
+<img name=im src="http://t1.extreme-dm.com/i.gif" height=38
+border=0 width=41 alt=""></a><script language="javascript"><!--
+an=navigator.appName;d=document;function
+pr(){d.write("<img src=\"http://t0.extreme-dm.com",
+"/0.gif?tag=smultita&j=y&srw="+srw+"&srb="+srb+"&",
+"rs="+r+"&l="+escape(d.referrer)+"\" height=1 ",
+"width=1>");}srb="na";srw="na";//-->
+</script><script language="javascript1.2"><!--
+s=screen;srw=s.width;an!="Netscape"?
+srb=s.colorDepth:srb=s.pixelDepth;//-->
+</script><script language="javascript"><!--
+r=41;d.images?r=d.im.width:z=0;pr();//-->
+</script><noscript><img height=1 width=1 alt="" 
+src="http://t0.extreme-dm.com/0.gif?tag=smultita&j=n"></noscript>
+
+<A HREF="#toc1"><IMG SRC="prev.gif" ALT="Previous"></A>
+<A href="http://www.dobit.com/emblin/default.htm" target="_parent"><IMG SRC="next.gif" ALT="Next"></A>
+<A HREF="#toc1"><IMG SRC="toc.gif" ALT="Contents"></A>
+
+<!----------------------------------------
+ (C) by Luc Hermans  smultita at gmail.com
+ 1999-2000             \\  //
+------------------000--(O)(O)--000------->
+<div id="Animal" style="position: absolute;"><img name="AniIMG" src="img/ani0.gif" width=25 height=25></div>
+<div id="ani0" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani1" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani2" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani3" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani4" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani5" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani6" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<div id="ani7" style="position: absolute; visibility: hidden;"><img src="img/splash.gif"></div>
+<script language="JavaScript" src="anima.js"></script>
+<script language="JavaScript"><!--
+ function ani_hit() {;} //--></script>
+</BODY>
+</HTML>
