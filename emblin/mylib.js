@@ -13,7 +13,7 @@ function getCookie(nr)
 function setCookie(nr, coki)
 {	a=getCookie(nr);
 	if (a!=coki)
-	document.cookie="@90000000000"+ nr+ "="+coki+";expires=Wednesday, 31-Dec-20 23:12:41 GMT ";
+	document.cookie="@90000000000"+ nr+ "="+coki+";expires=Wednesday, 31-Dec-27 23:12:41 GMT ";
 }
 function getPara(p)
 { var i,l, s=escape(location);
@@ -37,4 +37,14 @@ function getObj(n, d) { //MM_findObj v4.0
   if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
   for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
   if(!x && document.getElementById) x=document.getElementById(n); return x;
+}
+function json_rd(file_json) { //--Json read file
+    var xh=new XMLHttpRequest();
+    xh.open("GET",file_json,false);
+    //if (xmlhttp.overrideMimeType) {
+    //    xmlhttp.overrideMimeType("application/json");
+    xh.send();
+    jos = JSON.parse(xh.responseText);
+    console.log(file_json, jos);
+    return jos;
 }
