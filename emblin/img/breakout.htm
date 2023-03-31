@@ -20,6 +20,13 @@ function gMousePos(e)	//---get mouse posistion
 {	if (NS) racX=e.pageX;
 	else	racX=event.clientX+document.body.scrollLeft;
 	rac.left=racX-20;
+    console.log('mouse', racX);
+
+}
+function gTouchMove(e)
+{	racX=event.touches[0].clientX+document.body.scrollLeft;
+	rac.left=racX-20;
+    console.log('touch', racX);
 }
 function gReload()		//--start New Game
 { var SHOW=(NS?"show":"visible");
@@ -80,6 +87,7 @@ document.write("<div class='blk' id='racket'><img src='ball5.gif' width=40 heigh
 if (NS) { bal=document.layers["ball"]; rac=document.layers["racket"]; document.captureEvents(Event.MOUSEMOVE); } 
 else	{ bal=document.all["ball"].style; rac=document.all["racket"].style; }
 document.onmousemove=gMousePos;
+document.body.addEventListener('touchmove',gTouchMove);
 gReload();
 }
 //-->
