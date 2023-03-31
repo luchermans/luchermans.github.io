@@ -52,6 +52,9 @@ function init()	//--arg = pics 1-10, header, footer, Landscape, prise, title, li
 	if (i>0) { if (confirm( "Pay "+i+" for this game ?")) credit-=i; else return 0; }
 	if (init.arguments[r+2]=='L') { H=W; W=115; } //--Landscape
 	VIMG=init.arguments[r];
+    console.log('arg', init.arguments);
+    console.log('r', r);
+    console.log('VIMG', VIMG);
 	VEXT=init.arguments[r+1];
 	for (i=1; i<=r; ++i)	//--preload images
 	{	scI[i]=scI[i+r]=VIMG+init.arguments[i-1]+VEXT;
@@ -80,7 +83,8 @@ function init()	//--arg = pics 1-10, header, footer, Landscape, prise, title, li
 		(i==2?"Trys</h4></td><td><input type=text name='trys' size='6' value='0'>":"")+
 		(i==ROW-1?"</td><td><br><br><a href=./memory.htm>Go Back</a></h4>":"")+
 		"</td></tr>");
-	} i=VIMG.indexOf('/',8); if (i<8) i=28;
+	}
+    i=VIMG.indexOf('/',8); if (i<8) i=28;
 	d.write("</table></form> &nbsp Images &copy by <a href=http://"+ VIMG.substring(7,i)+" target=_blank>"+VIMG.substring(7,i)+"</a>");
 	add=min=trys=p=q=0; //nothing clicked
 	d.fm.credit.value=credit;
@@ -94,10 +98,10 @@ function getList(s, t)
   var c=0;
   switch(s)
   { 
-  case 1: a='https://giphy.com/embed/'; b=''; c=init('Cz6TlrRVVyv9S','xghFgmOKbk0G4','gladius','inttouch','securetouch','1525l','1266l','crossbow','1945c','acctouch',a,b,'L',0,"Touch screens",t); break;
+  case 1: a=''; b=''; c=init(animals,a,b,'L',0,"Touch screens",t); break;
   case 3: a='https://img.freepik.com/free-vector/'; b='.jpg'; c=init('flat-design-animation-frames-element-collection_23-2149732598','cartoon-character-animation-frames-set_23-2148953094','character-poses-with-skateboarder_23-2148462802','cartoon-element-animation-frames_23-2148955910','hand-drawn-animation-frames-element-collection_52683-98476','hand-drawn-animation-frames-element-collection_23-2149744901',
 'children-different-positions-isolated-white-background_1308-44427','character-poses-with-different-objects_23-2148462712','comic-effects_53876-81467','flat-design-animation-frames-element-collection_23-2149681273',a ,b,'L',0,"Animation",t); break;
-  case 4: a='http://images.animfactory.com/animations/'; b='_md_wht.gif'; c=init('insects/spiders/black_widow_dangle','insects/bees/buzzy_mad','insects/butterfly/monarch_flap','animals/dogs/big_headed_tiny_dog_awake','creatures/alien/alien_tai_chi','creatures/miscellaneous/beholder_hovering','creatures/vegieguys/cool_carrot','children/toys/fin_unwinding','nature/cactus/cactus_chewing_straw','nature/trees/apple_tree_eating_its_own_kind',a ,b,'L',0,"Animals",t); break;
+  case 4: a=''; b=''; c=init(animals[0],animals[1],animals[2],animals[3],animals[4],animals[5],animals[6],animals[7],animals[8],animals[9],a,b,'L',0,"Animals",t); break;
   case 10: c=init('VdbiLiFRW_8C'+m+'26/8226','TqlaQO0gDSgC'+m+'11/23211','X3-pM4s0oZ0C'+m+'83/7083','kgGig9BdFpUC'+m+'14/7014','CUD82YpTkRMC'+m+'55/23955','sadQoZIijP8C'+m+'86/7086','l3hfjKGvr-AC'+m+'2/3102','y_b0BhLvYfMC'+m+'49/6549','K6ts5gn45dkC'+m+'80/7080','FcaMybZqIaMC'+m+'44/7044',a,b,'L',0,"Space",t); break;
   case 11: c=init('CUOmodyuoHsC'+m+'88/23988','nE4WP_V63SgC'+m+'6/4606','sdSNhYo_ZPIC'+m+'85/23985','EynH6QvekAMC'+m+'24/4624','jt-KQDYbApMC'+m+'3/4603','aX1Md656yO8C'+m+'21/4621','Er3vG3QOAH4C'+m+'42/4642','pdjipqu0rjEC'+m+'15/4615','JNrVtqjo3qYC'+m+'94/18794','K-xnSfgpQ-0C'+m+'33/19033',a,b,'L',0,"Cars",t); break;
   case 12: a='http://mmstn0'; m='.sac2.fastsearch.net/'; b=''; c=init('2'+m+'%0A%203b04a0f000000bbb000003f90000a8b2/wms/grandam/gallery.asp','1'+m+'%0A%2012c715d700000b0b0000000000001edcndex.shtml','1'+m+'0f7ae1ad0000097b0000000a0000e8dc','4'+m+'%0A%200e79943100000b3a00000bbe000094b5er/cars/Porsche/porsche.html','4'+m+'%0A%201d12820e000008e600000bb900008151%20%20/cars/Pagani/pagani.html','4'+m+'%0A%200e799f6b000007e300000bbe00009336%20%20/cars/Porsche/porsche.html','4'+m+'03440f85000009a000000bbb00000d9e','4'+m+'185efbc40000095200000bda0000f94c','4'+m+'%0A%2003ce450e00000ac200000bbb00004477er/cars/Porsche/porsche.html','3'+m+'00dba26300000bf8000007ee0000ae75',a,b,'L',0,"Cars 2",t); break;
@@ -121,6 +125,20 @@ function getList(s, t)
   }
   return c;
 } 
+//--Json load---
+var animals;
+function json_rd(file_json) {
+    var xh=new XMLHttpRequest();
+    xh.open("GET",file_json,false);
+    //if (xmlhttp.overrideMimeType) {
+    //    xmlhttp.overrideMimeType("application/json");
+    xh.send();
+    jos = JSON.parse(xh.responseText);
+    console.log(jos);
+    return jos.img;
+}
+
+animals = json_rd('img/animals.json');
 
 //--Main---
 var s=parseInt("0"+getPara("a"),10);

@@ -4,7 +4,17 @@
  (C) by Luc Hermans  smultita at gmail.com
  1999-2000             \\  //
 ------------------000--(O)(O)--000------->
-<style type="text/css"> .blk  {	position : absolute; } </style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+.blk  {	position : absolute; }
+body {
+  background-image: url("breakout.jpg");
+  background-repeat: no-repeat;
+  background-color: black;
+}
+</style>
+
 <script>
 function gMousePos(e)	//---get mouse posistion
 {	if (NS) racX=e.pageX;
@@ -51,7 +61,7 @@ NS=(document.layers?1:0);
 document.write("<h1>&nbsp</h1>");
 if (NS) { W=window.innerWidth; H=window.innerHeight; }
 else    { W=document.body.offsetWidth; H=document.body.offsetHeight; }
-if (W<380 || W>420 || H<480 || H>520)
+if (0) //W<380 || W>420 || H<480 || H>520)
 {	document.write("<table width='1200' height='900' bgcolor='#00FFFF' ><td>&nbsp</td></table>");
 	window.open('breakout.htm','BreakOut','status=no,top=10,left=100,width=400,height=500');
 	setTimeout( 'window.close()', 1000);
@@ -75,7 +85,7 @@ gReload();
 //-->
 </script>
 </head>
-<body background="breakout.jpg">
+<body>
 &nbsp
 </body>
 </html>
