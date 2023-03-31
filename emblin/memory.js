@@ -92,18 +92,6 @@ function init()    //--arg = pics 1-10, header, footer, Landscape, prise, title,
     return 1;
 }
 
-//--Json load---
-function json_readd(file_json) {
-    var xh=new XMLHttpRequest();
-    xh.open("GET",file_json,false);
-    //if (xmlhttp.overrideMimeType) {
-    //    xmlhttp.overrideMimeType("application/json");
-    xh.send();
-    jos = JSON.parse(xh.responseText);
-    console.log(jos);
-    return jos.img;
-}
-
 //--The List
 function getList(s, t)
 { var c=0;
@@ -115,38 +103,8 @@ function getList(s, t)
   c = init(pics[0],pics[1],pics[2],pics[3],pics[4],pics[5],pics[6],pics[7],pics[8],pics[9],'','','L',memo.price,memo.title,t);  
   return c;
 }
-  /*
-  switch(s)
-  { 
-  //case 1:  title='Touch screens'; break;
-  //case 3:  title='animation'; break;
-  case 4:  title='Animals'; break;
-  case 10: title='Space'; break;
-  case 11: title='cars'; break;
-  case 12: title='Cars2'; break;
-  case 13: title='Ocean Live'; break;
-  case 14: title='Animals2'; break;
-  case 15: title='Mountains'; break;
-  case 16: title='WaterFalls'; break;
-  case 17: title='Nature'; break;
-  case 18: title='Grand Canyon'; break;
-  case 21: title='Sport'; break;
-  case 22: title='Movies'; break;
-  case 23: title='Star Trek'; break;
-  case 50: title='Bikini Babes'; p=225; break;
-  case 51: title='Super Models'; p=250;  break;
-  case 301: title='More Babes'; p=500;  break;
-  case 302: title='Tits'; p=550;  break;
-  case 303: title='More Tits'; p=750;  break;
-  case 304: title="Pussy's"; p=1250;  break;
-  }
-  if (title == '')  return 0;
-  var pics=[];
-  if (t==0) pics=json_rd('img/'+title+'.json').img; 
-  c = init(pics[0],pics[1],pics[2],pics[3],pics[4],pics[5],pics[6],pics[7],pics[8],pics[9],a,b,'L',p,title,t);
-  return c;
-} 
-*/
+// Ocean Live','Mountains','WaterFalls','Nature','Grand Canyon','Sport','Movies','Star Trek','Bikini Babes','Super Models','Tits',"Pussy's"
+
 var memo_list=json_rd('img/memory.json');
 
 //--Main---
