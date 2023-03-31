@@ -122,8 +122,6 @@ d.write("<table align='center'"+ (s<1?"":"bgcolor='#ffffff' background='img/bgnd
     credit=getCookie(0); if (credit=="NULL") credit=200; credit=parseInt(credit);
     d.write( "<H2>Hey "+n+" ! </H2>This is a variant of the Memory game. The goal is to find two of the same images. However for every click on an image you loose 0, 5, 10 or 20 credits. But if you find a set you win the product! So you can win up to 20*20 = 400 credits with just two clicks. The more credits you get the more games you can play.<br>I give you 200 credits for free, to start playing. If you run out of credits, get extra credits by catching the thing. I also give you 1000 credits for every Euro/Dollar attached to an email send to <a href='mailto:smultita at gmail.com'>smultita at gmail.com</a> <b>;)</b><br>"+
     "<form name='fm' onsubmit='setCookie(2,frname.value); return 0;'>Please enter your <b>name </b><input type='text' name='frname'> <input type='submit' value='Enter'> &nbsp &nbsp Your <b>Credit </b> is &nbsp <input type=text name='credit' size='8' value='0'></form>"+
-    (credit>999 ? "You can now download the <a href='pub/dlrsrc.zip'><b>DLR source</b></a>":
-    "Collect 1000 Credits to download the <b>DLR source</b>") +
     "<br>Start playing by selecting one of the links below.<br><b>Have Fun !</b><br><br>");    
     d.write( "<table><tr><td width='50%'><dt>");
     for (var i=2; i<(c==6?300:100); ++i)
