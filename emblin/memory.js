@@ -86,9 +86,10 @@ function init()    //--arg = pics 1-10, header, footer, Landscape, prise, title,
         "</td></tr>");
     }
     i=VIMG.indexOf('/',8); if (i<8) i=28;
-    d.write("</table></form> &nbsp Images &copy by <a href=http://"+ VIMG.substring(7,i)+" target=_blank>"+VIMG.substring(7,i)+"</a>");
+    d.write("</table></form>");
     add=min=trys=p=q=0; //nothing clicked
     d.fm.credit.value=credit;
+    window.scrollTo(0, 1); // This hides the address bar:    
     return 1;
 }
 
@@ -138,4 +139,3 @@ d.write("<table align='center'"+ (s<1?"":"bgcolor='#ffffff' background='img/bgnd
   d.write("</td></tr></table>");
   n=getPara("p");
   if (s==0) { if (n!="NULL") d.write("<form action='memory.htm'>Password: <input type='password' name='p'><input type='submit' value='Adult'>"); }
-  else  d.write("<table align='center'><tr><td>Please wait until all images are downloaded</td></tr></table>");
