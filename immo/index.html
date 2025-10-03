@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheppersstraat 29, Herentals</title>
+    <style>
+        /* Basis styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        .contact-info p {
+            margin: 5px 0;
+        }
+        .links a {
+            display: inline-block;
+            margin-right: 15px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .links a:hover {
+            background-color: #45a049;
+        }
+
+        /* Slideshow specifieke styling */
+        .slideshow-container {
+            max-width: 700px;
+            position: relative;
+            margin: auto;
+            margin-bottom: 20px;
+            border: 1px solid #eee; /* Optionele rand om de slideshow */
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden; /* Zorgt ervoor dat de slides netjes binnen de container blijven */
+        }
+        .mySlides {
+            display: none; /* Verbergt alle slides standaard */
+        }
+        .mySlides img {
+            width: 100%; /* Zorgt ervoor dat de afbeelding de volledige breedte vult */
+            height: 400px; /* Vaste hoogte voor alle afbeeldingen */
+            object-fit: cover; /* Zorgt ervoor dat de afbeeldingen de ruimte vullen zonder vervorming */
+            vertical-align: middle;
+            border-radius: 8px 8px 0 0; /* Alleen bovenaan afronden */
+        }
+
+        /* Vorige & volgende knoppen */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background-color: rgba(0,0,0,0.6); /* Donkerder voor betere zichtbaarheid */
+        }
+        /* Positie van de "volgende" knop */
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+        /* Bij hover, voeg een donkerdere achtergrondkleur toe */
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        /* Caption text */
+        .text {
+            color: #f2f2f2;
+            font-size: 15px;
+            padding: 8px 12px;
+            position: absolute;
+            bottom: 0px; /* Plaats de tekst onderaan de afbeelding */
+            width: 100%;
+            text-align: center;
+            background-color: rgba(0,0,0,0.6);
+            border-radius: 0 0 8px 8px; /* Alleen onderaan afronden */
+        }
+
+        /* Aantal (1/3, 2/3, etc.) */
+        .numbertext {
+            color: #f2f2f2;
+            font-size: 12px;
+            padding: 8px 12px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(0,0,0,0.6);
+            border-radius: 8px 0 0 0; /* Alleen linksboven afronden */
+        }
+
+        /* The dots/bullets/indicators */
+        .dot-container {
+            text-align: center;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 0 0 8px 8px;
+            margin-top: -5px; /* Trek de dots wat omhoog onder de slideshow */
+        }
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+        .active, .dot:hover {
+            background-color: #717171;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Woning Te Koop: Scheppersstraat 29, Herentals</h1>
+        <hr>
+        <h2>Impressie</h2>
+        
+        <div class="slideshow-container">
+
+            <div class="mySlides fade">
+                <div class="numbertext">1 / 3</div>
+                <img src="img/huis.jpg" alt="Foto van de voorkant van het huis">
+                <div class="text">Straatkant</div>
+            </div>
+
+            <div class="mySlides fade">
+                <div class="numbertext">2 / 3</div>
+                <img src="img/woonkamer.jpg" alt="Foto van de woonkamer">
+                <div class="text">Ruime en lichte woonkamer</div>
+            </div>
+
+            <div class="mySlides fade">
+                <div class="numbertext">3 / 3</div>
+                <img src="img/tuin4.jpg" alt="Foto van de tuin">
+                <div class="text">Zonnige tuin op het zuiden</div>
+            </div>
+
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+        <br>
+
+        <div class="dot-container">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+
+        <hr>
+        <h2>Over de Woning</h2>
+        <p>
+        Deze instapklare moderne en energiezuinige woning staat de koop in het centrum van Herentals. Ze is gelegen in een doodlopende en kindvriendelijke straat op wandelafstand van de markt.
+De ruime woning met 3 tot 4 slaapkamers heeft veel en grote ramen waardoor er een ruimtelijk gevoel gecreëerd wordt. De grote tuin is zuid gelegen en is voorzien van een tuinberging en 2 terrassen die je op elk uur van de dag van zon voorzien. Parkeren kan je onder de overdekte carport of vooraan op straat waar er veel parkeergelegenheid voorzien is.
+        </p>
+<h3>Kort samengevat:</h3>
+<ul><li>Ruime moderne gezinswoning met 3 slaapkamers waarbij een 4e slaapkamer mogelijk is.
+</li><li>Energiezuinig: EPC B! Voorzien van 24 zonnepanelen (4950Wp), waarvan u de komende 6 jaar nog profiteert van de certificaten.
+</li><li>Verwarming: De woning wordt verwarmd op gas door een CV-ketel. Vloerverwarming aangevuld met radiatoren, voor een constante en aangename warmte. 
+</li><li>Grote zuid gelegen tuin met ruime tuinberging.
+</ul>
+<h3>De indeling:</h3>
+<p>
+<b>Gelijkvloers:</b> Betreed de woning via de inkomhal die leidt naar de open en lichte leefruimte. De open keuken met recent vernieuwde toestellen grenst aan de eetkamer en de gezellige zithoek, allemaal badend in natuurlijk licht dankzij de grote raampartijen.
+</p><p>
+Verder vindt u op dit niveau een badkamer, 2 aparte toiletten, een ruime berging en een extra flexibele ruimte die u kunt inrichten als speelkamer, leeshoek, thuiskantoor of bureau
+</p><p>
+<b>Verdieping:</b> De trap brengt u naar de eerste verdieping met 3 volwaardige slaapkamers en een extra bureau met ingemaakte kasten die perfect kan dienen als vierde slaapkamer indien gewenst.
+</p><p>
+<b>Kelder:</b> Onder de woning bevindt zich een grote, droge gevloerde kelder waar tevens de CV-ketel op gas is opgesteld.
+</p><p>
+<b>Buiten:</b> Een ruime tuin gelegen op een perceel van 13,3are. Een groot terras op het zuiden, rechtstreeks toegankelijk via een groot schuifraam vanuit de leefruimte. Een tweede, westelijk gelegen terras voor de avondzon en een ruime carport.
+
+        </p>
+        <ul>
+            <li>Adres:Scheppersstraat 29, 2200 Herentals</li>
+            <li>Vraagprijs: &euro; 599000</li>
+            <li>Woonoppervlakte: 227 m&sup2;</li>
+            <li>Perceel oppervalkte: 1330 m&sup2;</li>
+        </ul>
+<!--
+        <hr>
+        <h2>Meer Informatie</h2>
+        <div class="links">
+            <a href="https://www.immosite.be/link-naar-woning" target="_blank">Bekijk op Immoweb</a>
+            <a href="https://www.andereimmosite.nl/link-naar-woning" target="_blank">Bekijk op [Naam Andere Immo]</a>
+            <a href="#contact">Neem Contact Op</a>
+        </div>
+-->
+        <hr>
+        <h2 id="contact">Contacteer Ons</h2>
+        <div class="contact-info">
+            <p>Interesse of wilt u een bezichtiging inplannen? Neem dan contact met ons op!</p>
+            <p><strong>Naam:</strong> Marleen Dauwen</p>
+            <p><strong>Telefoon:</strong> <a href="tel:0479/663039">0479/66 30 39</a></p>
+            <p><strong>E-mail:</strong> <a href="mailto:l1.dauwen _at_ gmail.com">l1.dauwen _at_ gmail.com</a></p>
+        </div>
+
+    </div>
+
+    <script>
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        // Volgende/vorige controls
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        // Thumbnail image controls
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            let dots = document.getElementsByClassName("dot");
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex-1].style.display = "block";
+            dots[slideIndex-1].className += " active";
+        }
+    </script>
+
+</body>
+</html>
