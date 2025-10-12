@@ -3,145 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="immo.css">
+    <script src="immo.js"></script>
     <title>Scheppersstraat 29, Herentals</title>
-    <style>
-        /* Basis styling */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            color: #0056b3;
-        }
-        .contact-info p {
-            margin: 5px 0;
-        }
-        .links a {
-            display: inline-block;
-            margin-right: 15px;
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .links a:hover {
-            background-color: #45a049;
-        }
-
-        /* Slideshow specifieke styling */
-        .slideshow-container {
-            max-width: 700px;
-            position: relative;
-            margin: auto;
-            margin-bottom: 20px;
-            border: 1px solid #eee;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-            border-radius: 8px;
-            overflow: hidden;
-            /* Zorgt ervoor dat de hoogte zich aanpast aan de afbeelding */
-            max-height: 500px; 
-            height: auto;
-        }
-        .mySlides {
-            display: none;
-        }
-        
-        /* Oplossing voor "niet afknippen" */
-        .mySlides img {
-            width: 100%;
-            /* Verwijder de vaste hoogte en object-fit. */
-            /* Gebruik 'height: auto' om de hoogte aan te passen aan de breedte, 
-               waardoor de verhouding van de afbeelding behouden blijft. */
-            height: auto; 
-            object-fit: contain; /* Zorgt ervoor dat de hele afbeelding zichtbaar is */
-            background-color: #000; /* Optioneel: zwarte achtergrond voor de lege ruimte */
-            vertical-align: middle;
-            border-radius: 8px 8px 0 0;
-        }
-
-        /* Vorige & volgende knoppen */
-        .prev, .next {
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            width: auto;
-            padding: 16px;
-            margin-top: -22px;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            transition: 0.6s ease;
-            border-radius: 0 3px 3px 0;
-            user-select: none;
-            background-color: rgba(0,0,0,0.6);
-        }
-        .next {
-            right: 0;
-            border-radius: 3px 0 0 3px;
-        }
-        .prev:hover, .next:hover {
-            background-color: rgba(0,0,0,0.8);
-        }
-
-        /* Caption text */
-        .text {
-            color: #f2f2f2;
-            font-size: 15px;
-            padding: 8px 12px;
-            position: absolute;
-            bottom: 0px;
-            width: 100%;
-            text-align: center;
-            background-color: rgba(0,0,0,0.6);
-            border-radius: 0 0 8px 8px;
-        }
-
-        /* Aantal (1/3, 2/3, etc.) */
-        .numbertext {
-            color: #f2f2f2;
-            font-size: 12px;
-            padding: 8px 12px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: rgba(0,0,0,0.6);
-            border-radius: 8px 0 0 0;
-        }
-
-        /* The dots/bullets/indicators */
-        .dot-container {
-            text-align: center;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 0 0 8px 8px;
-            margin-top: -5px;
-        }
-        .dot {
-            cursor: pointer;
-            height: 15px;
-            width: 15px;
-            margin: 0 2px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.6s ease;
-        }
-        .active, .dot:hover {
-            background-color: #717171;
-        }
-    </style>
 </head>
 <body>
 
@@ -207,9 +71,9 @@ Verder vindt u op dit niveau een badkamer, 2 aparte toiletten, een ruime berging
 
     </div>
 
-    <script>
-        // 1. JSON met foto-links en beschrijvingen
-        const fotoLijst = [
+<script>
+    // 1. JSON met foto-links en beschrijvingen
+       const fotoLijst = [
             { "src": "img/huis.jpg", "caption": "De straatkant" },
             { "src": "img/inkom.jpg", "caption": "Inkomhal" },
             { "src": "img/traphal.jpg", "caption": "Traphal" },
@@ -232,106 +96,10 @@ Verder vindt u op dit niveau een badkamer, 2 aparte toiletten, een ruime berging
             { "src": "img/tuinhuis.jpg", "caption": "Thuinberging" },
         ];
 
-        let slideIndex = 1;
 
-        // 2. Functie om de HTML van de slideshow te genereren
-        function genereerSlideshow() {
-            const container = document.getElementById('slideshow-container');
-            const dotContainer = document.getElementById('dot-container');
-            
-            let slidesHTML = '';
-            let dotsHTML = '';
-
-            fotoLijst.forEach((foto, index) => {
-                const slideNum = index + 1;
-                // HTML voor elke slide
-                slidesHTML += `
-                    <div class="mySlides fade">
-                        <div class="numbertext">${slideNum} / ${fotoLijst.length}</div>
-                        <img src="${foto.src}" alt="${foto.caption}">
-                        <div class="text">${foto.caption}</div>
-                    </div>
-                `;
-                // HTML voor elke dot
-                dotsHTML += `<span class="dot" onclick="currentSlide(${slideNum})"></span>`;
-            });
-
-            // Voeg navigatieknoppen toe aan de slides-HTML
-            slidesHTML += `
-                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                <a class="next" onclick="plusSlides(1)">&#10095;</a>
-            `;
-
-            container.innerHTML = slidesHTML;
-            dotContainer.innerHTML = dotsHTML;
-            
-            // Start de slideshow
-            showSlides(slideIndex);
-            
-            // 3. Touch/Swipe functionaliteit toevoegen
-            voegSwipeToe();
-        }
-
-        // 4. Standaard Slideshow Logica
-        function plusSlides(n) {
-            showSlides(slideIndex += n);
-        }
-
-        function currentSlide(n) {
-            showSlides(slideIndex = n);
-        }
-
-        function showSlides(n) {
-            let i;
-            let slides = document.getElementsByClassName("mySlides");
-            let dots = document.getElementsByClassName("dot");
-            
-            if (slides.length === 0) return; // Stop als er geen slides zijn
-
-            if (n > slides.length) {slideIndex = 1}
-            if (n < 1) {slideIndex = slides.length}
-            
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
-            }
-            for (i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" active", "");
-            }
-            
-            slides[slideIndex-1].style.display = "block";
-            dots[slideIndex-1].className += " active";
-        }
-
-        // 5. Swipe (Mobile) Functionaliteit
-        function voegSwipeToe() {
-            const element = document.getElementById('slideshow-container');
-            let touchstartX = 0;
-            let touchendX = 0;
-
-            element.addEventListener('touchstart', e => {
-                touchstartX = e.changedTouches[0].screenX;
-            }, false);
-
-            element.addEventListener('touchend', e => {
-                touchendX = e.changedTouches[0].screenX;
-                handleGesprek();
-            }, false);
-
-            function handleGesprek() {
-                // Swipe naar links (volgende slide)
-                if (touchendX < touchstartX - 50) {
-                    plusSlides(1);
-                }
-                // Swipe naar rechts (vorige slide)
-                if (touchendX > touchstartX + 50) {
-                    plusSlides(-1);
-                }
-            }
-        }
-        
-        // Start de applicatie
-        window.onload = genereerSlideshow;
-    </script>
+    // Start de applicatie
+    window.onload = genereerSlideshow;
+</script>
 
 </body>
 </html>
